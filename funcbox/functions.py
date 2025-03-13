@@ -586,3 +586,134 @@ def lcm(a: int, b: int) -> int:
             "The 'lcm' function expects integers for a and b."
         )
     return abs(a * b) // gcd(a, b)
+
+
+def fuzzy_search(search_term: str, text_list: List[str]) -> Union[str, None]:
+    """
+    Fuzzy search for the best match of a search term in a list of strings.
+    Uses fuzzywuzzy library to perform the search.
+
+    Args:
+        search_term (str): The term to search for.
+        text_list (List[str]): A list of strings to search within.
+
+    Returns:
+        Union[str, None]: The best matching string from the list, or None if no good match is found.
+    """
+    from fuzzywuzzy import fuzz
+
+    best_match = None
+    highest_score = 0
+
+    for text in text_list:
+        score = fuzz.ratio(search_term.lower(), text.lower())
+        if score > highest_score:
+            highest_score = score
+            best_match = text
+
+    if highest_score > 60:  # Threshold for a "good" match
+        return best_match
+    return None
+
+
+def dijkstra(graph: dict, start_node: Any) -> dict:
+    """
+    Compute Dijkstra's shortest path algorithm to find the shortest paths from a start node to all other nodes in a graph.
+
+    Args:
+        graph (dict): A graph represented as an adjacency list, where keys are nodes and values are dictionaries
+                      mapping neighbors to edge weights.
+        start_node (Any): The node to start the pathfinding from.
+
+    Returns:
+        dict: A dictionary containing two dictionaries:
+              - 'distances': Shortest distances from the start node to each node.
+              - 'paths': Shortest paths from the start node to each node.
+              Nodes not reachable from the start node will have a distance of infinity and path as None.
+
+    Raises:
+        ValueError: If the graph is not a dictionary or the start_node is not in the graph.
+
+    Examples:
+        >>> graph = {
+        ...     'A': {'B': 4, 'C': 2},
+        ...     'B': {'D': 5, 'E': 1},
+        ...     'C': {'B': 1, 'E': 3},
+        ...     'D': {'F': 2},
+        ...     'E': {'D': 1, 'F': 4},
+        ...     'F': {}
+        ... }
+        >>> dijkstra(graph, 'A')
+        ({'A': 0, 'B': 3, 'C': 2, 'D': 4, 'E': 4, 'F': 6}, {'A': ['A'], 'B': ['A', 'C', 'B'], 'C': ['A', 'C'], 'D': ['A', 'C', 'B', 'E', 'D'], 'E': ['A', 'C', 'E'], 'F': ['A', 'C', 'B', 'E', 'D', 'F']})
+    """
+    import heapq
+
+    if not isinstance(graph, dict):
+        raise ValueError("The graph must be a dictionary represented as an adjacency list.")
+    if start_node not in graph:
+        raise ValueError("The start_node must be a node present in the graph.")
+
+    distances = {node: float('inf') for node in graph}
+    distances[start_node] = 0
+    paths = {node: None for node in graph}
+    paths[start_node] = [start_node]
+    priority_queue = [(0, start_node)]  # Priority queue of (distance, node) tuples
+
+    while priority_queue:
+        current_distance, current_node = heapq.heappop(priority_queue)
+
+        # Ignore if we've already found a shorter path
+        if current_distance > distances[current_node]:
+            continue
+
+        for neighbor, weight in graph.get(current_node, {}).items():
+            distance = current_distance + weight
+
+            # Only consider this path if it's better than any path we've already found
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                paths[neighbor] = paths[current_node] + [neighbor]
+                heapq.heappush(priority_queue, (distance, neighbor))
+
+    return {"distances": distances, "paths": paths}
+
+
+def calculate_distance(coord1: tuple, coord2: tuple) -> float:
+    """
+    Calculate the distance between two geographical coordinates using the Haversine formula.
+
+    Args:
+        coord1 (tuple): Tuple of (latitude, longitude) for the first coordinate in degrees.
+        coord2 (tuple): Tuple of (latitude, longitude) for the second coordinate in degrees.
+
+    Returns:
+        float: The distance between the two coordinates in kilometers.
+
+    Raises:
+        ValueError: If the input coordinates are not tuples of length 2, or if latitude/longitude values are not floats.
+
+    Examples:
+        >>> calculate_distance((40.7128, -74.0060), (34.0522, -118.2437))
+        3935.74  # Distance between New York and Los Angeles in km
+    """
+    import math
+
+    if not isinstance(coord1, tuple) or not isinstance(coord2, tuple):
+        raise ValueError("Coordinates must be tuples.")
+    if len(coord1) != 2 or len(coord2) != 2:
+        raise ValueError("Each coordinate must be a tuple of (latitude, longitude).")
+    if not isinstance(coord1[0], (int, float)) or not isinstance(coord1[1], (int, float)) or not isinstance(coord2[0], (int, float)) or not isinstance(coord2[1], (int, float)):
+        raise ValueError("Latitude and longitude values must be numbers.")
+
+    lat1, lon1 = math.radians(coord1[0]), math.radians(coord1[1])
+    lat2, lon2 = math.radians(coord2[0]), math.radians(coord2[1])
+
+    # Haversine formula
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    radius_earth = 6371  # Radius of Earth in kilometers
+    distance = radius_earth * c
+
+    return round(distance, 2)

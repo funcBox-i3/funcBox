@@ -95,20 +95,6 @@ FuncBox is organized into categories for easy navigation:
         print(fibonacci([7, 8]))  # Output: [13, 21]
         ```
 
-*   **`is_palindrome(string: Union[str, List[str]]) -> Union[bool, List[bool]]`**:
-    Checks if a given string or a list of strings is a palindrome.
-    - **Parameters**:
-        - `string`: A string or a list of strings to be checked.
-    - **Returns**:
-        - `bool` or `List[bool]`: `True` if the string is a palindrome, `False` otherwise. Returns a list of boolean values if a list of strings is provided.
-    - **Raises**:
-        - `ValueError`: If the input is not a string, is an empty string, or is not a list of strings.
-    - **Examples**:
-        ```python
-        print(is_palindrome("racecar"))  # Output: True
-        print(is_palindrome(["hello", "madam"]))  # Output: [False, True]
-        ```
-
 *   **`is_armstrong(number: Union[int, List[int]]) -> Union[bool, List[bool]]`**:
     Checks if a given number or a list of numbers is an Armstrong number.
     - **Parameters**:
@@ -234,7 +220,50 @@ FuncBox is organized into categories for easy navigation:
         print(lcm(12, 18))  # Output: 36
         ```
 
+*   **`dijkstra(graph: dict, start_node: Any) -> dict`**:
+    Compute Dijkstra’s shortest path algorithm to find the shortest paths from a start node to all other nodes in a graph.
+    - **Parameters**:
+        - `graph`: A graph represented as an adjacency list, where keys are nodes and values are dictionaries mapping neighbors to edge weights.
+        - `start_node`: The node to start the pathfinding from.
+    - **Returns**:
+        - `dict`: A dictionary containing two dictionaries:
+              - `'distances'`: Shortest distances from the start node to each node.
+              - `'paths'`: Shortest paths from the start node to each node.
+              Nodes not reachable from the start node will have a distance of infinity and path as None.
+    - **Raises**:
+        - `ValueError`: If the graph is not a dictionary or the `start_node` is not in the graph.
+    - **Examples**:
+        ```python
+        graph = {
+            'A': {'B': 4, 'C': 2},
+            'B': {'D': 5, 'E': 1},
+            'C': {'B': 1, 'E': 3},
+            'D': {'F': 2},
+            'E': {'D': 1, 'F': 4},
+            'F': {}
+        }
+        result = dijkstra(graph, 'A')
+        print(result['distances'])
+        # Output: {'A': 0, 'B': 3, 'C': 2, 'D': 4, 'E': 4, 'F': 6}
+        print(result['paths'])
+        # Output: {'A': ['A'], 'B': ['A', 'C', 'B'], 'C': ['A', 'C'], 'D': ['A', 'C', 'B', 'E', 'D'], 'E': ['A', 'C', 'E'], 'F': ['A', 'C', 'B', 'E', 'D', 'F']}
+        ```
+
 ### String Operations
+
+*   **`is_palindrome(string: Union[str, List[str]]) -> Union[bool, List[bool]]`**:
+    Checks if a given string or a list of strings is a palindrome.
+    - **Parameters**:
+        - `string`: A string or a list of strings to be checked.
+    - **Returns**:
+        - `bool` or `List[bool]`: `True` if the string is a palindrome, `False` otherwise. Returns a list of boolean values if a list of strings is provided.
+    - **Raises**:
+        - `ValueError`: If the input is not a string, is an empty string, or is not a list of strings.
+    - **Examples**:
+        ```python
+        print(is_palindrome("racecar"))  # Output: True
+        print(is_palindrome(["hello", "madam"]))  # Output: [False, True]
+        ```
 
 *   **`camel_to_snake(name: str) -> str`**:
     Converts a string from camel case to snake case.
@@ -312,6 +341,38 @@ FuncBox is organized into categories for easy navigation:
     - **Examples**:
         ```python
         print(get_char_count("hello")) # Output: {'h': 1, 'e': 1, 'l': 2, 'o': 1}
+        ```
+
+*   **`fuzzy_search(search_term: str, text_list: List[str]) -> Union[str, None]`**:
+    Fuzzy searches for the best match of a search term within a list of strings.
+    - **Parameters**:
+        - `search_term`: The string to search for.
+        - `text_list`: A list of strings to search within.
+    - **Returns**:
+        - `Union[str, None]`: The best matching string from the list or `None` if no good match is found (score less than 60).
+    - **Examples**:
+        ```python
+        strings = ["apple", "banana", "cherry", "date"]
+        print(fuzzy_search("appel", strings))  # Output: apple
+        print(fuzzy_search("bananas", strings)) # Output: banana
+        print(fuzzy_search("grape", strings))  # Output: None
+        ```
+
+### Location Operations
+
+*   **`calculate_distance(coord1: tuple, coord2: tuple) -> float`**:
+    Calculate the distance between two geographical coordinates using the Haversine formula.
+    - **Parameters**:
+        - `coord1`: Tuple of (latitude, longitude) for the first coordinate in degrees.
+        - `coord2`: Tuple of (latitude, longitude) for the second coordinate in degrees.
+    - **Returns**:
+        - `float`: The distance between the two coordinates in kilometers.
+    - **Raises**:
+        - `ValueError`: If the input coordinates are not tuples of length 2, or if latitude/longitude values are not floats.
+    - **Examples**:
+        ```python
+        print(calculate_distance((40.7128, -74.0060), (34.0522, -118.2437)))
+        # Output: 3935.75
         ```
 
 ### Time Operations
