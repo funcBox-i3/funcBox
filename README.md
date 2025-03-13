@@ -366,13 +366,13 @@ FuncBox is organized into categories for easy navigation:
         - `coord1`: Tuple of (latitude, longitude) for the first coordinate in degrees.
         - `coord2`: Tuple of (latitude, longitude) for the second coordinate in degrees.
     - **Returns**:
-        - `float`: The distance between the two coordinates in kilometers.
+        - `float`: The distance between the two coordinates in centimeters.
     - **Raises**:
         - `ValueError`: If the input coordinates are not tuples of length 2, or if latitude/longitude values are not floats.
     - **Examples**:
         ```python
         print(calculate_distance((40.7128, -74.0060), (34.0522, -118.2437)))
-        # Output: 3935.75
+        # Output: 393574394.19
         ```
 
 ### Time Operations

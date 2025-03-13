@@ -107,7 +107,11 @@ def factorial(number: Union[int, List[int]]) -> Union[int, List[int]]:
         if not isinstance(n, int):
             raise ValueError("Input must be an integer.")
         if n < 0:
-            raise ValueError("Factorial is only defined for non-negative integers. Received value: {}".format(number))
+            raise ValueError(
+                "Factorial is only defined for non-negative integers. Received value: {}".format(
+                    number
+                )
+            )
         return math.factorial(n)
 
     if isinstance(number, list):
@@ -127,7 +131,11 @@ def is_prime(number: Union[int, List[int]]) -> Union[bool, List[bool]]:
         if not isinstance(n, int):
             raise ValueError("Input must be an integer.")
         if n < 0:
-            raise ValueError("Prime check is only valid for non-negative integers. Received value: {}".format(n))
+            raise ValueError(
+                "Prime check is only valid for non-negative integers. Received value: {}".format(
+                    n
+                )
+            )
         return _check_prime(n)
 
     if isinstance(number, list):
@@ -148,7 +156,9 @@ def fibonacci(number: Union[int, List[int]]) -> Union[int, List[int]]:
             raise ValueError("Input must be an integer.")
         if n < 0:
             raise ValueError(
-                "Fibonacci numbers are only defined for non-negative integers. Received value: {}".format(n)
+                "Fibonacci numbers are only defined for non-negative integers. Received value: {}".format(
+                    n
+                )
             )
         return _fibonacci_single(n)
 
@@ -214,7 +224,9 @@ def is_perfect(number: Union[int, List[int]]) -> Union[bool, List[bool]]:
             raise ValueError("Input must be an integer.")
         if n < 1:
             raise ValueError(
-                "Perfect number check is only valid for positive integers. Received value: {}".format(n)
+                "Perfect number check is only valid for positive integers. Received value: {}".format(
+                    n
+                )
             )
 
         sum_divisors = 1
@@ -404,9 +416,8 @@ def count_words(text: str) -> int:
         )
     if not text:
         return 0
-    words = re.findall(r'\b\w+\b', text)
+    words = re.findall(r"\b\w+\b", text)
     return len(words)
-
 
 
 def get_word_count(text: str) -> dict:
@@ -416,7 +427,7 @@ def get_word_count(text: str) -> dict:
             "The 'get_word_count' function expects a string. "
             "Received: {}".format(type(text).__name__)
         )
-    words = re.findall(r'\b\w+\b', text.lower())
+    words = re.findall(r"\b\w+\b", text.lower())
     return dict(Counter(words))
 
 
@@ -430,7 +441,7 @@ def get_char_count(text: str) -> dict:
     return dict(Counter(text))
 
 
-def get_current_date(format_str: str = '%Y-%m-%d') -> str:
+def get_current_date(format_str: str = "%Y-%m-%d") -> str:
     """Get the current date formatted as string."""
     if not isinstance(format_str, str):
         raise ValueError(
@@ -440,7 +451,7 @@ def get_current_date(format_str: str = '%Y-%m-%d') -> str:
     return now.strftime(format_str)
 
 
-def get_current_time(format_str: str = '%H:%M:%S') -> str:
+def get_current_time(format_str: str = "%H:%M:%S") -> str:
     """Get the current time formatted as string."""
     if not isinstance(format_str, str):
         raise ValueError(
@@ -453,10 +464,10 @@ def get_current_time(format_str: str = '%H:%M:%S') -> str:
 def get_day_of_week() -> str:
     """Get the current day of the week."""
     now = datetime.now()
-    return now.strftime('%A')
+    return now.strftime("%A")
 
 
-def calculate_age(birth_date: str, date_format: str = '%Y-%m-%d') -> int:
+def calculate_age(birth_date: str, date_format: str = "%Y-%m-%d") -> int:
     """Calculate age given a birth date string."""
     if not isinstance(birth_date, str) or not isinstance(date_format, str):
         raise ValueError(
@@ -467,7 +478,11 @@ def calculate_age(birth_date: str, date_format: str = '%Y-%m-%d') -> int:
     except ValueError:
         raise ValueError("Invalid date format. Please use format like YYYY-MM-DD.")
     today = datetime.now().date()
-    age = today.year - birth_date_obj.year - ((today.month, today.day) < (birth_date_obj.month, birth_date_obj.day))
+    age = (
+        today.year
+        - birth_date_obj.year
+        - ((today.month, today.day) < (birth_date_obj.month, birth_date_obj.day))
+    )
     return age
 
 
@@ -477,7 +492,7 @@ def convert_to_celsius(fahrenheit: float) -> float:
         raise ValueError(
             "The 'convert_to_celsius' function expects a number (int or float) for fahrenheit."
         )
-    return (fahrenheit - 32) * 5/9
+    return (fahrenheit - 32) * 5 / 9
 
 
 def convert_to_fahrenheit(celsius: float) -> float:
@@ -486,7 +501,7 @@ def convert_to_fahrenheit(celsius: float) -> float:
         raise ValueError(
             "The 'convert_to_fahrenheit' function expects a number (int or float) for celsius."
         )
-    return (celsius * 9/5) + 32
+    return (celsius * 9 / 5) + 32
 
 
 def kg_to_lbs(kg: float) -> float:
@@ -546,6 +561,7 @@ def percentage(part: float, whole: float) -> float:
         raise ValueError("The whole value cannot be zero.")
     return 100 * part / whole
 
+
 def percentile(data: List[float], n: float) -> float:
     """Calculate the nth percentile of a list of numbers."""
     if not isinstance(data, list) or not all(isinstance(x, (int, float)) for x in data):
@@ -570,21 +586,18 @@ def percentile(data: List[float], n: float) -> float:
 def gcd(a: int, b: int) -> int:
     """Calculate the greatest common divisor of two numbers."""
     if not all(isinstance(arg, int) for arg in [a, b]):
-        raise ValueError(
-            "The 'gcd' function expects integers for a and b."
-        )
+        raise ValueError("The 'gcd' function expects integers for a and b.")
     if b == 0:
         return a
     while b:
         a, b = b, a % b
     return a
 
+
 def lcm(a: int, b: int) -> int:
     """Calculate the least common multiple of two numbers."""
     if not all(isinstance(arg, int) for arg in [a, b]):
-        raise ValueError(
-            "The 'lcm' function expects integers for a and b."
-        )
+        raise ValueError("The 'lcm' function expects integers for a and b.")
     return abs(a * b) // gcd(a, b)
 
 
@@ -649,11 +662,13 @@ def dijkstra(graph: dict, start_node: Any) -> dict:
     import heapq
 
     if not isinstance(graph, dict):
-        raise ValueError("The graph must be a dictionary represented as an adjacency list.")
+        raise ValueError(
+            "The graph must be a dictionary represented as an adjacency list."
+        )
     if start_node not in graph:
         raise ValueError("The start_node must be a node present in the graph.")
 
-    distances = {node: float('inf') for node in graph}
+    distances = {node: float("inf") for node in graph}
     distances[start_node] = 0
     paths = {node: None for node in graph}
     paths[start_node] = [start_node]
@@ -687,14 +702,14 @@ def calculate_distance(coord1: tuple, coord2: tuple) -> float:
         coord2 (tuple): Tuple of (latitude, longitude) for the second coordinate in degrees.
 
     Returns:
-        float: The distance between the two coordinates in kilometers.
+        float: The distance between the two coordinates in centimeters.
 
     Raises:
         ValueError: If the input coordinates are not tuples of length 2, or if latitude/longitude values are not floats.
 
     Examples:
         >>> calculate_distance((40.7128, -74.0060), (34.0522, -118.2437))
-        3935.74  # Distance between New York and Los Angeles in km
+        393574394.19  # Distance between New York and Los Angeles in cm
     """
     import math
 
@@ -702,7 +717,12 @@ def calculate_distance(coord1: tuple, coord2: tuple) -> float:
         raise ValueError("Coordinates must be tuples.")
     if len(coord1) != 2 or len(coord2) != 2:
         raise ValueError("Each coordinate must be a tuple of (latitude, longitude).")
-    if not isinstance(coord1[0], (int, float)) or not isinstance(coord1[1], (int, float)) or not isinstance(coord2[0], (int, float)) or not isinstance(coord2[1], (int, float)):
+    if (
+        not isinstance(coord1[0], (int, float))
+        or not isinstance(coord1[1], (int, float))
+        or not isinstance(coord2[0], (int, float))
+        or not isinstance(coord2[1], (int, float))
+    ):
         raise ValueError("Latitude and longitude values must be numbers.")
 
     lat1, lon1 = math.radians(coord1[0]), math.radians(coord1[1])
@@ -711,9 +731,12 @@ def calculate_distance(coord1: tuple, coord2: tuple) -> float:
     # Haversine formula
     dlon = lon2 - lon1
     dlat = lat2 - lat1
-    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    a = (
+        math.sin(dlat / 2) ** 2
+        + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    )
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    radius_earth = 6371  # Radius of Earth in kilometers
-    distance = radius_earth * c
+    radius_earth_cm = 6371 * 1000 * 100
+    distance_cm = radius_earth_cm * c
 
-    return round(distance, 2)
+    return round(distance_cm, 2)
