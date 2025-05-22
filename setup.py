@@ -1,5 +1,6 @@
-from setuptools import setup, find_packages
 import re
+
+from setuptools import find_packages, setup
 
 # Read version without importing the package
 with open("funcbox/__init__.py", "r") as f:
@@ -7,7 +8,7 @@ with open("funcbox/__init__.py", "r") as f:
     if version_match:
         version = version_match.group(1)
     else:
-        raise RuntimeError("Unable to find version string")
+        version = "0.0.0"
 
 setup(
     name="funcbox",
@@ -17,7 +18,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Aditya Prasad S",
-    author_email="aditya@devh.in",
+    author_email="plutoniumx502@gmail.com",
     url="https://github.com/adityaprasad502/funcbox",
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -25,7 +26,4 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.6",
-    install_requires=[
-        "fuzzywuzzy",
-    ],
 )

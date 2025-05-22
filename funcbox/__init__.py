@@ -1,6 +1,7 @@
-from .functions import *
+from .dijkstra import dijkstra
+from .misc import fibonacci, get_factors, is_prime
 
 # Aliases
-fact = factorial
+# fact = factorial
 
-__version__ = "0.2.2"
+__version__ = "0.3.0"
