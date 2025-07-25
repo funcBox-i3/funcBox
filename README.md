@@ -96,6 +96,22 @@ or to a specific end node if specified.
     print(result['paths'])      # Output paths for nodes processed
     ```
 
+### `primes(start: int = 2, limit: int = None) -> List[int]`
+Efficiently generate all prime numbers between start and limit using the Sieve of Eratosthenes algorithm.
+
+*   **Parameters**:
+    *   `start`: The lower bound for finding prime numbers (inclusive). Defaults to 2.
+    *   `limit`: The upper bound for finding prime numbers (inclusive).
+*   **Returns**:
+    *   `List[int]`: A list of all prime numbers from start to the given limit.
+*   **Raises**:
+    *   `ValueError`: If `limit` is less than 2 or `start` is less than 2.
+*   **Examples**:
+    ```python
+    print(primes(limit=10))  # Output: [2, 3, 5, 7]
+    print(primes(start=10, limit=20))  # Output: [11, 13, 17, 19]
+    ```
+
 ## Disclaimer
 
 FuncBox provides utility functions for general use. The developer is not responsible for any issues caused by improper use or abuse of the library.
