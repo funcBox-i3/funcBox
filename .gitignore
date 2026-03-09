@@ -131,3 +131,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+testfile.py
+testfilex.py

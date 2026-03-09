@@ -3,12 +3,13 @@ import re
 from setuptools import find_packages, setup
 
 # Read version without importing the package
-with open("funcbox/__init__.py", "r") as f:
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", f.read(), re.M)
-    if version_match:
-        version = version_match.group(1)
-    else:
-        version = "0.0.0"
+with open("funcbox/__init__.py") as f:
+    version_match = re.search(
+        r"^__version__ = ['\"]([^'\"]*)['\"]",
+        f.read(),
+        re.MULTILINE,
+    )
+    version = version_match.group(1) if version_match else "0.0.0"
 
 setup(
     name="funcbox",

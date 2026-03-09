@@ -1,9 +1,9 @@
+import heapq
 from typing import Any
 
 
 def dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict:
-    """
-    Compute Dijkstra's shortest path algorithm to find the shortest paths from a start node to all other nodes in a graph,
+    """Compute Dijkstra's shortest path algorithm to find the shortest paths from a start node to all other nodes in a graph,
     or to a specific end node if specified.
 
     Args:
@@ -36,47 +36,60 @@ def dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict:
         >>> dijkstra(graph, 'A')
         ({'A': 0, 'B': 3, 'C': 2, 'D': 4, 'E': 4, 'F': 6}, {'A': ['A'], 'B': ['A', 'C', 'B'], 'C': ['A', 'C'], 'D': ['A', 'C', 'B', 'E', 'D'], 'E': ['A', 'C', 'E'], 'F': ['A', 'C', 'B', 'E', 'D', 'F']})        >>> dijkstra(graph, 'A', 'F')
         {'distances': {'A': 0, 'C': 2, 'B': 3, 'E': 4, 'D': 4, 'F': 6}, 'paths': {'A': ['A'], 'C': ['A', 'C'], 'B': ['A', 'C', 'B'], 'E': ['A', 'C', 'E'], 'D': ['A', 'C', 'E', 'D'], 'F': ['A', 'C', 'E', 'D', 'F']}}
-    """
-    import heapq
 
+    """
     if not isinstance(graph, dict):
+        msg = "The graph must be a dictionary represented as an adjacency list."
         raise ValueError(
-            "The graph must be a dictionary represented as an adjacency list."
+            msg,
         )
     if start_node not in graph:
-        raise ValueError("The start_node must be a node present in the graph.")
+        msg = "The start_node must be a node present in the graph."
+        raise ValueError(msg)
     if end_node is not None and end_node not in graph:
-        raise ValueError("The end_node must be a node present in the graph.")
+        msg = "The end_node must be a node present in the graph."
+        raise ValueError(msg)
 
     distances = {node: float("inf") for node in graph}
     distances[start_node] = 0
-    paths = {node: None for node in graph}
-    paths[start_node] = [start_node]
+    predecessors = dict.fromkeys(graph)
     priority_queue = [(0, start_node)]
+    visited = set()
+
+    def reconstruct_path(node):
+        path = []
+        while node is not None:
+            path.append(node)
+            node = predecessors[node]
+        return path[::-1]
 
     while priority_queue:
         current_distance, current_node = heapq.heappop(priority_queue)
 
+        if current_node in visited:
+            continue
+        visited.add(current_node)
+
         if end_node is not None and current_node == end_node:
             processed_distances = {
-                node: dist
-                for node, dist in distances.items()
-                if dist != float("inf") or node == start_node
+                node: dist for node, dist in distances.items() if dist != float("inf")
             }
             processed_paths = {
-                node: path for node, path in paths.items() if path is not None
+                node: reconstruct_path(node) for node in processed_distances
             }
             return {"distances": processed_distances, "paths": processed_paths}
 
-        if current_distance > distances[current_node]:
-            continue
-
-        for neighbor, weight in graph.get(current_node, {}).items():
+        for neighbor, weight in graph[current_node].items():
+            if neighbor in visited:
+                continue
             distance = current_distance + weight
-
             if distance < distances[neighbor]:
                 distances[neighbor] = distance
-                paths[neighbor] = paths[current_node] + [neighbor]
+                predecessors[neighbor] = current_node
                 heapq.heappush(priority_queue, (distance, neighbor))
 
+    paths = {
+        node: reconstruct_path(node) if distances[node] != float("inf") else None
+        for node in graph
+    }
     return {"distances": distances, "paths": paths}
