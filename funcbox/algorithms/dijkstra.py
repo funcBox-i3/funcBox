@@ -21,8 +21,9 @@ def dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict:
               will be included. Nodes not reachable will have a distance of infinity and path as None.
 
     Raises:
-        ValueError: If the graph is not a dictionary, the start_node is not in the graph,
-                   or end_node is specified but not in the graph.
+        ValueError: If the graph is not a dictionary, any node's adjacency value is not a dict,
+                   any edge weight is negative or non-numeric, any neighbor is not a node in the
+                   graph, start_node is not in the graph, or end_node is not in the graph.
 
     Examples:
         >>> graph = {
@@ -40,9 +41,21 @@ def dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict:
     """
     if not isinstance(graph, dict):
         msg = "The graph must be a dictionary represented as an adjacency list."
-        raise ValueError(
-            msg,
-        )
+        raise ValueError(msg)
+    for node, neighbors in graph.items():
+        if not isinstance(neighbors, dict):
+            msg = f"Adjacency list for node {node!r} must be a dict, got {type(neighbors).__name__!r}"
+            raise ValueError(msg)
+        for neighbor, weight in neighbors.items():
+            if neighbor not in graph:
+                msg = f"Neighbor {neighbor!r} of node {node!r} is not a node in the graph"
+                raise ValueError(msg)
+            if not isinstance(weight, (int, float)) or isinstance(weight, bool):
+                msg = f"Edge weight from {node!r} to {neighbor!r} must be a number, got {type(weight).__name__!r}"
+                raise ValueError(msg)
+            if weight < 0:
+                msg = f"Edge weight from {node!r} to {neighbor!r} must be non-negative, got {weight}"
+                raise ValueError(msg)
     if start_node not in graph:
         msg = "The start_node must be a node present in the graph."
         raise ValueError(msg)

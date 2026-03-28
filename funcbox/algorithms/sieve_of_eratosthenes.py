@@ -14,6 +14,7 @@ def primes(start: int = 2, limit: int | None = None) -> list[int]:
         List[int]: A list of all prime numbers from start to the given limit
 
     Raises:
+        TypeError: If start or limit is not an integer (or is a bool).
         ValueError: If limit is less than 2 or start is less than 2
 
     Examples:
@@ -26,6 +27,12 @@ def primes(start: int = 2, limit: int | None = None) -> list[int]:
     if limit is None:
         msg = "Limit must be provided"
         raise ValueError(msg)
+    if isinstance(limit, bool) or not isinstance(limit, int):
+        msg = f"limit must be an integer, got {type(limit).__name__!r}"
+        raise TypeError(msg)
+    if isinstance(start, bool) or not isinstance(start, int):
+        msg = f"start must be an integer, got {type(start).__name__!r}"
+        raise TypeError(msg)
     if limit < 2:
         msg = "Limit must be at least 2"
         raise ValueError(msg)

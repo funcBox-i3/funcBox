@@ -20,7 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Aditya Prasad S",
     author_email="plutoniumx502@gmail.com",
-    url="https://github.com/adityaprasad502/funcbox",
+    url="https://github.com/funcbox-i3/funcbox",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
