@@ -133,5 +133,4 @@ dmypy.json
 .pyre/
 
 # Project specific ignores
-PYPI_README_VERIFY.md
 /experiments

@@ -3,13 +3,13 @@ from __future__ import annotations
 import re
 from collections import Counter
 
-__all__ = ["isAnagram"]
+__all__ = ["is_anagram"]
 
 _NON_WORD_RE = re.compile(r"[^\w]")
 _NON_WORD_SPACE_RE = re.compile(r"[^\w\s]")
 
 
-def isAnagram(
+def is_anagram(
         str1: str,
         str2: str,
         case: bool = False,
@@ -32,13 +32,13 @@ def isAnagram(
         TypeError: If ``str1`` or ``str2`` is not a string.
 
     Examples:
-        >>> isAnagram("listen", "silent")
+        >>> is_anagram("listen", "silent")
         True
-        >>> isAnagram("Listen", "Silent", case=True)
+        >>> is_anagram("Listen", "Silent", case=True)
         True
-        >>> isAnagram("a gentleman", "elegant man", spaces=True)
+        >>> is_anagram("a gentleman", "elegant man", spaces=True)
         True
-        >>> isAnagram("Astronomer!", "Moon starer", case=True, punct=True, spaces=True)
+        >>> is_anagram("Astronomer!", "Moon starer", case=True, punct=True, spaces=True)
         True
 
     """

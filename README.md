@@ -113,13 +113,13 @@ PYPI_UNCOMMENT_END -->
 
 | Function                | Description                                           | Status |
 |-------------------------|-------------------------------------------------------|--------|
-| [isAnagram](#isanagram) | Checks whether two strings are anagrams of each other | Beta   |
+| [is_anagram](#isanagram) | Checks whether two strings are anagrams of each other | Beta   |
 
 <!-- PYPI_FILTER_END -->
 <!-- PYPI_UNCOMMENT_START
 | Function | Description |
 |----------|-------------|
-| [isAnagram](#isanagram) | Checks whether two strings are anagrams of each other |
+| [is_anagram](#isanagram) | Checks whether two strings are anagrams of each other |
 PYPI_UNCOMMENT_END -->
 
 #### Data Utilities
@@ -375,12 +375,12 @@ print(safe_get({"employees": [{"name": "Pu94X"}]}, "employees.0.name"))
 
 ---
 
-### > `isAnagram`
+### > `is_anagram`
 
 <a id="isanagram"></a>
 
 ```python
-isAnagram(str1, str2, case=False, spaces=False, punct=False)
+is_anagram(str1, str2, case=False, spaces=False, punct=False)
 ```
 
 Checks if two strings are anagrams of each other.
@@ -388,7 +388,7 @@ Checks if two strings are anagrams of each other.
 #### Usage
 
 ```python
-isAnagram(str1: str, str2: str, case: bool = False, spaces: bool = False, punct: bool = False) -> bool
+is_anagram(str1: str, str2: str, case: bool = False, spaces: bool = False, punct: bool = False) -> bool
 ```
 
 **Parameters**
@@ -410,17 +410,17 @@ isAnagram(str1: str, str2: str, case: bool = False, spaces: bool = False, punct:
 **Examples**
 
 ```python
-from funcbox import isAnagram
+from funcbox import is_anagram
 
-print(isAnagram("listen", "silent"))
+print(is_anagram("listen", "silent"))
 # True
-print(isAnagram("Listen", "Silent", case=True))
+print(is_anagram("Listen", "Silent", case=True))
 # True
-print(isAnagram("a gentleman", "elegant man", spaces=True))
+print(is_anagram("a gentleman", "elegant man", spaces=True))
 # True
-print(isAnagram("Astronomer!", "Moon starer", case=True, punct=True, spaces=True))
+print(is_anagram("Astronomer!", "Moon starer", case=True, punct=True, spaces=True))
 # True
-print(isAnagram("hello", "world"))
+print(is_anagram("hello", "world"))
 # False
 ```
 
