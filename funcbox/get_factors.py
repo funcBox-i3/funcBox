@@ -1,17 +1,21 @@
+from __future__ import annotations
+
 from math import isqrt
+
+__all__ = ["get_factors"]
 
 
 def get_factors(num: int) -> list[int]:
-    """Get all factors of a number, excluding the number itself.
+    """Return proper factors of an integer.
 
     Args:
-        num (int): The number to find factors for. Must be a plain integer.
+        num: Integer to factor.
 
     Returns:
-        List[int]: A sorted list of all factors of the number (excluding the number itself).
+        A sorted list of factors excluding the number itself.
 
     Raises:
-        TypeError: If num is not an integer (or is a bool).
+        TypeError: If ``num`` is not a plain integer.
 
     Examples:
         >>> get_factors(12)

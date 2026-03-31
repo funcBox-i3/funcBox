@@ -1,18 +1,22 @@
+from __future__ import annotations
+
 _SMALL_PRIMES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
 _SMALL_PRIMES_SET = frozenset(_SMALL_PRIMES)
 
+__all__ = ["is_prime"]
+
 
 def is_prime(n: int) -> bool:
-    """Check if a number is prime.
+    """Check whether an integer is prime.
 
     Args:
-        n (int): The number to check for primality. Must be a plain integer.
+        n: Integer to test.
 
     Returns:
-        bool: True if the number is prime, False otherwise.
+        ``True`` when prime, else ``False``.
 
     Raises:
-        TypeError: If n is not an integer (or is a bool).
+        TypeError: If ``n`` is not a plain integer.
 
     Examples:
         >>> is_prime(7)

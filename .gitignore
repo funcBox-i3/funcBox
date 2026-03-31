@@ -133,3 +133,7 @@ dmypy.json
 .pyre/
 testfile.py
 testfilex.py
+
+# PyPI verification README
+PYPI_README_VERIFY.md
+/scripts

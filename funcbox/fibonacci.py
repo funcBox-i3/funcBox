@@ -1,16 +1,23 @@
+from __future__ import annotations
+
+__all__ = ["fibonacci"]
+
+
 def fibonacci(n: int, output_type: str = "int") -> int | list[int]:
-    """Calculate Fibonacci numbers efficiently.
+    """Compute Fibonacci values.
 
     Args:
-        n (int): The index of Fibonacci number to calculate (0-indexed) or count of numbers for list.
-        output_type (str, optional): Output format - 'int' for single value or 'list' for sequence. Defaults to "int".
+        n: Index of the term to return (for ``"int"``) or number of terms
+            to generate (for ``"list"``).
+        output_type: ``"int"`` to return a single term, ``"list"`` to return
+            the sequence prefix.
 
     Returns:
-        Union[int, List[int]]: Either the nth Fibonacci number or a list of n Fibonacci numbers.
+        The nth Fibonacci number or a list of Fibonacci numbers.
 
     Raises:
-        TypeError: If n is not an integer or output_type is not a string.
-        ValueError: If n is negative or output_type is not 'int' or 'list'.
+        TypeError: If ``n`` is not an integer or ``output_type`` is not a string.
+        ValueError: If ``n`` is negative or ``output_type`` is invalid.
 
     Examples:
         >>> fibonacci(0)
@@ -48,10 +55,10 @@ def fibonacci(n: int, output_type: str = "int") -> int | list[int]:
             return []
         if n == 1:
             return [0]
-        fib_list = [0] * n
+        fib_list: list[int] = [0] * n
         fib_list[1] = 1
         for i in range(2, n):
             fib_list[i] = fib_list[i - 1] + fib_list[i - 2]
         return fib_list
-    msg = "Invalid output_type. Use 'int' or 'list'."
+    msg = "output_type must be 'int' or 'list'"
     raise ValueError(msg)

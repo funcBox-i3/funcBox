@@ -1,20 +1,22 @@
+from __future__ import annotations
+
 from .is_prime import is_prime
+
+__all__ = ["classify_numbers"]
 
 
 def classify_numbers(numbers: list[int]) -> dict[str, list[int]]:
-    """Separate a list of integers into primes, composites, and neither (0, 1, negatives).
+    """Classify integers as prime, composite, or neither.
 
     Args:
-        numbers (list[int]): A list of integers to classify.
+        numbers: Integers to classify.
 
     Returns:
-        dict[str, list[int]]: A dictionary with three keys:
-            - 'primes': numbers that are prime
-            - 'composites': numbers that are composite (> 1 and not prime)
-            - 'neither': numbers that are neither prime nor composite (< 2)
+        A dictionary with keys ``"primes"``, ``"composites"``, and
+        ``"neither"``.
 
     Raises:
-        TypeError: If numbers is not a list, or any element is not an integer.
+        TypeError: If ``numbers`` is not a list or contains non-integers.
 
     Examples:
         >>> classify_numbers([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -31,7 +33,9 @@ def classify_numbers(numbers: list[int]) -> dict[str, list[int]]:
             msg = f"All elements must be integers; got {type(n).__name__!r} at index {i}"
             raise TypeError(msg)
 
-    primes, composites, neither = [], [], []
+    primes: list[int] = []
+    composites: list[int] = []
+    neither: list[int] = []
     for n in numbers:
         if n < 2:
             neither.append(n)

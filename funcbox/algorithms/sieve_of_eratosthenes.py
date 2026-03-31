@@ -1,21 +1,25 @@
+from __future__ import annotations
+
 import bisect
 import math
 from itertools import compress
 
+__all__ = ["primes"]
+
 
 def primes(start: int = 2, limit: int | None = None) -> list[int]:
-    """Efficiently generate all prime numbers between start and limit using the Sieve of Eratosthenes algorithm.
+    """Generate prime numbers in an inclusive range.
 
     Args:
-        start (int): The lower bound for finding prime numbers (inclusive). Defaults to 2.
-        limit (int): The upper bound for finding prime numbers (inclusive)
+        start: Inclusive lower bound. Defaults to ``2``.
+        limit: Inclusive upper bound.
 
     Returns:
-        List[int]: A list of all prime numbers from start to the given limit
+        Prime numbers between ``start`` and ``limit``.
 
     Raises:
-        TypeError: If start or limit is not an integer (or is a bool).
-        ValueError: If limit is less than 2 or start is less than 2
+        TypeError: If ``start`` or ``limit`` is not a plain integer.
+        ValueError: If ``limit`` is missing or if bounds are invalid.
 
     Examples:
         >>> primes(2, 10)

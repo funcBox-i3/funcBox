@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📦 FuncBox
+# FuncBox
 
 A lightweight Python utility library for common mathematical and algorithmic tasks.
 
@@ -20,37 +20,110 @@ A lightweight Python utility library for common mathematical and algorithmic tas
 
 ## Install
 
+### Latest Release:
 ```bash
 pip install -U funcbox
 ```
+or
+```bash
+python -m pip install -U funcbox
+```
+
+<!-- PYPI_FILTER_START -->
+### Beta Version (Pre-release from GitHub):
+```bash
+pip install git+https://github.com/funcBox-i3/funcBox.git
+```
+or
+```bash
+python -m pip install git+https://github.com/funcBox-i3/funcBox.git
+```
+<!-- PYPI_FILTER_END -->
 
 ## Quick Start
 
 ```python
 from funcbox import *
 
-is_prime(17)                     # True
-classify_numbers([2, 3, 4, 5, 6]) # {'primes': [2, 3, 5], 'composites': [4, 6], 'neither': []}
-fibonacci(10)                    # 55
-get_factors(12)                  # [1, 2, 3, 4, 6]
+is_prime(17)
+# True
+classify_numbers([2, 3, 4, 5, 6])
+# {'primes': [2, 3, 5], 'composites': [4, 6], 'neither': []}
+fibonacci(10)
+# 55
+get_factors(12)
+# [1, 2, 3, 4, 6]
+safe_get({"user": {"profile": {"city": "Chennai"}}}, "user.profile.city", default=None)
+# Chennai
 ```
 
 ## Functions Overview
 
+#### Algorithms
+
+<!-- PYPI_FILTER_START -->
+| Function | Description | Status |
+|----------|-------------|--------|
+| [binary_search](#binary_search) | Searches for a value in a sorted sequence | Beta |
+| [dijkstra](#dijkstra) | Calculates shortest paths in a graph using Dijkstra's algorithm | Published |
+<!-- PYPI_FILTER_END -->
+<!-- PYPI_UNCOMMENT_START
 | Function | Description |
 |----------|-------------|
-| [is_prime](#is_prime) | Determines whether a given integer is prime |
+| [binary_search](#binary_search) | Searches for a value in a sorted sequence |
+| [dijkstra](#dijkstra) | Calculates shortest paths in a graph using Dijkstra's algorithm |
+PYPI_UNCOMMENT_END -->
+
+#### Number Theory
+
+<!-- PYPI_FILTER_START -->
+| Function | Description | Status |
+|----------|-------------|--------|
+| [classify_numbers](#classify_numbers) | Categorizes integers into prime, composite, and neutral subsets | Beta |
+| [fibonacci](#fibonacci) | Computes the $n$-th Fibonacci term or sequence | Published |
+| [get_factors](#get_factors) | Computes all proper divisors of an integer | Published |
+| [is_prime](#is_prime) | Determines whether a given integer is prime | Published  |
+| [primes](#primes) | Generates primes within a range via the Sieve of Eratosthenes | Published |
+<!-- PYPI_FILTER_END -->
+<!-- PYPI_UNCOMMENT_START
+| Function | Description |
+|----------|-------------|
 | [classify_numbers](#classify_numbers) | Categorizes integers into prime, composite, and neutral subsets |
 | [fibonacci](#fibonacci) | Computes the $n$-th Fibonacci term or sequence |
 | [get_factors](#get_factors) | Computes all proper divisors of an integer |
-| [isAnagram](#isanagram) | Computes if two strings are anagrams of each other optimally |
-| [binary_search](#binary_search) | Searches for a value in a sorted sequence |
-| [dijkstra](#dijkstra) | Calculates shortest paths in a graph using Dijkstra's algorithm |
+| [is_prime](#is_prime) | Determines whether a given integer is prime |
 | [primes](#primes) | Generates primes within a range via the Sieve of Eratosthenes |
+PYPI_UNCOMMENT_END -->
+
+#### String Processing
+
+<!-- PYPI_FILTER_START -->
+| Function | Description | Status |
+|----------|-------------|--------|
+| [isAnagram](#isanagram) | Checks whether two strings are anagrams of each other | Beta |
+<!-- PYPI_FILTER_END -->
+<!-- PYPI_UNCOMMENT_START
+| Function | Description |
+|----------|-------------|
+| [isAnagram](#isanagram) | Checks whether two strings are anagrams of each other |
+PYPI_UNCOMMENT_END -->
+
+#### Data Utilities
+
+<!-- PYPI_FILTER_START -->
+| Function | Description | Status |
+|----------|-------------|--------|
+| [safe_get](#safe_get) | Fetches nested dictionary values safely with dot notation | Beta |
+<!-- PYPI_FILTER_END -->
+<!-- PYPI_UNCOMMENT_START
+| Function | Description |
+|----------|-------------|
+| [safe_get](#safe_get) | Fetches nested dictionary values safely with dot notation |
+PYPI_UNCOMMENT_END -->
 
 ## API Reference
 
-### ✨ `is_prime`
+### >  `is_prime`
 <a id="is_prime"></a>
 
 ```python
@@ -59,7 +132,7 @@ is_prime(n)
 
 Determines whether a given integer is prime.
 
-**Signature**
+#### Usage
 ```python
 is_prime(n: int) -> bool
 ```
@@ -77,13 +150,15 @@ is_prime(n: int) -> bool
 ```python
 from funcbox import is_prime
 
-print(is_prime(7))   # True
-print(is_prime(10))  # False
+print(is_prime(7))
+# True
+print(is_prime(10))
+# False
 ```
 
 ---
 
-### ✨ `classify_numbers`
+### >  `classify_numbers`
 <a id="classify_numbers"></a>
 
 ```python
@@ -92,7 +167,7 @@ classify_numbers(numbers)
 
 Categorizes a sequence of integers into prime, composite, and neutral sets (0, 1, or negative numbers).
 
-**Signature**
+#### Usage
 ```python
 classify_numbers(numbers: list[int]) -> dict[str, list[int]]
 ```
@@ -115,14 +190,13 @@ from funcbox import classify_numbers
 
 print(classify_numbers([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
 # {'primes': [2, 3, 5, 7], 'composites': [4, 6, 8, 9], 'neither': [0, 1]}
-
 print(classify_numbers([-5, 0, 1, 13, 15]))
 # {'primes': [13], 'composites': [15], 'neither': [-5, 0, 1]}
 ```
 
 ---
 
-### ✨ `fibonacci`
+### >  `fibonacci`
 <a id="fibonacci"></a>
 
 ```python
@@ -131,7 +205,7 @@ fibonacci(n, output_type="int")
 
 Computes Fibonacci sequence values. Supports retrieving an individual $n$-th term or an array containing the sequence up to the $n$-th element.
 
-**Signature**
+#### Usage
 ```python
 fibonacci(n: int, output_type: str = "int") -> int | list[int]
 ```
@@ -154,14 +228,17 @@ fibonacci(n: int, output_type: str = "int") -> int | list[int]
 ```python
 from funcbox import fibonacci
 
-print(fibonacci(0))                    # 0
-print(fibonacci(5))                    # 5
-print(fibonacci(5, output_type="list")) # [0, 1, 1, 2, 3]
+print(fibonacci(0))
+# 0
+print(fibonacci(5))
+# 5
+print(fibonacci(5, output_type="list"))
+# [0, 1, 1, 2, 3]
 ```
 
 ---
 
-### ✨ `get_factors`
+### >  `get_factors`
 <a id="get_factors"></a>
 
 ```python
@@ -170,7 +247,7 @@ get_factors(num)
 
 Computes all proper divisors (factors) of an integer, excluding the number itself.
 
-**Signature**
+#### Usage
 ```python
 get_factors(num: int) -> list[int]
 ```
@@ -194,23 +271,77 @@ print(get_factors(7))   # [1]
 
 ---
 
-### ✨ `isAnagram`
+### >  `safe_get`
+<a id="safe_get"></a>
+
+```python
+safe_get(dictionary, path, default=None, return_last_seen=False, separator=".")
+```
+
+Fetches a value from deeply nested dictionaries using a path string or explicit key sequence.
+
+#### Usage
+```python
+safe_get(
+  dictionary: dict[str, Any],
+  path: str | list[str | int] | tuple[str | int, ...],
+  default: Any = None,
+  return_last_seen: bool = False,
+  separator: str = ".",
+) -> Any
+```
+
+**Parameters**
+- `dictionary` (dict[str, Any]): The source dictionary.
+- `path` (str | list[str | int] | tuple[str | int, ...]): Dot-separated path (for example, `"user.profile.city"`) or an explicit sequence of keys.
+- `default` (Any): Value returned when lookup fails.
+- `return_last_seen` (bool): If `True`, returns the deepest resolved value before failure.
+- `separator` (str): Delimiter used when `path` is a string. Defaults to `"."`.
+
+**Raises**
+- `TypeError`: Raised if `path` is not a `str`, `list`, or `tuple`, or if `separator` is not a `str`.
+
+**Returns**
+- `Any`: The resolved value, or `default` (or last seen value when `return_last_seen=True`).
+
+**Examples**
+```python
+from funcbox import safe_get
+
+obj = {"user": {"profile": {"address": {"city": "Chennai"}}}}
+
+print(safe_get(obj, "user.profile.address.city", default=None))
+# Chennai
+print(safe_get(obj, "user.profile.address.zip", default="unknown"))
+# unknown
+print(safe_get(obj, "user.profile.address.zip", return_last_seen=True))
+# {'city': 'Chennai'}
+print(safe_get({"a": {0: "zero"}}, ["a", 0]))
+# zero
+```
+
+---
+
+### >  `isAnagram`
 <a id="isanagram"></a>
 
 ```python
-isAnagram(str1, str2)
+isAnagram(str1, str2, case=False, spaces=False, punct=False)
 ```
 
 Checks if two strings are anagrams of each other.
 
-**Signature**
+#### Usage
 ```python
-isAnagram(str1: str, str2: str) -> bool
+isAnagram(str1: str, str2: str, case: bool = False, spaces: bool = False, punct: bool = False) -> bool
 ```
 
 **Parameters**
 - `str1` (str): First string to compare.
 - `str2` (str): Second string to compare.
+- `case` (bool): Ignore case when comparing. Defaults to `False`.
+- `spaces` (bool): Ignore spaces when comparing. Defaults to `False`.
+- `punct` (bool): Ignore punctuation when comparing. Defaults to `False`.
 
 **Raises**
 - `TypeError`: Raised if `str1` or `str2` is not a string.
@@ -222,13 +353,21 @@ isAnagram(str1: str, str2: str) -> bool
 ```python
 from funcbox import isAnagram
 
-print(isAnagram("listen", "silent")) # True
-print(isAnagram("hello", "world"))   # False
+print(isAnagram("listen", "silent"))
+# True
+print(isAnagram("Listen", "Silent", case=True))
+# True
+print(isAnagram("a gentleman", "elegant man", spaces=True))
+# True
+print(isAnagram("Astronomer!", "Moon starer", case=True, punct=True, spaces=True))
+# True
+print(isAnagram("hello", "world"))
+# False
 ```
 
 ---
 
-### ✨ `binary_search`
+### >  `binary_search`
 <a id="binary_search"></a>
 
 ```python
@@ -237,7 +376,7 @@ binary_search(arr, target)
 
 Searches for a target value in a sorted sequence.
 
-**Signature**
+#### Usage
 ```python
 binary_search(arr: Sequence, target: Any) -> int
 ```
@@ -256,13 +395,15 @@ binary_search(arr: Sequence, target: Any) -> int
 ```python
 from funcbox import binary_search
 
-print(binary_search([1, 3, 5, 7, 9], 7))  # 3
-print(binary_search([1, 3, 5, 7, 9], 4))  # -1
+print(binary_search([1, 3, 5, 7, 9], 7))
+# 3
+print(binary_search([1, 3, 5, 7, 9], 4))
+# -1
 ```
 
 ---
 
-### ✨ `dijkstra`
+### >  `dijkstra`
 <a id="dijkstra"></a>
 
 ```python
@@ -271,9 +412,8 @@ dijkstra(graph, start_node, end_node=None)
 
 Calculates the shortest paths from a source node to all other reachable nodes in a weighted graph using Dijkstra's algorithm.
 
-**Signature**
+#### Usage
 ```python
-from typing import Any
 dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict
 ```
 
@@ -293,6 +433,7 @@ dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict
 **Examples**
 ```python
 from funcbox import dijkstra
+from pprint import pprint
 
 graph = {
     'A': {'B': 4, 'C': 2},
@@ -304,26 +445,36 @@ graph = {
 }
 
 result = dijkstra(graph, 'A')
-print(result['distances'])
-print(result['paths'])
+
+pprint(result['distances']) 
+# {'A': 0, 'B': 3, 'C': 2, 'D': 5, 'E': 4, 'F': 7}
+pprint(result['paths'])
+# {'A': ['A'],
+#  'B': ['A', 'C', 'B'],
+#  'C': ['A', 'C'],
+#  'D': ['A', 'C', 'B', 'E', 'D'],
+#  'E': ['A', 'C', 'B', 'E'],
+#  'F': ['A', 'C', 'B', 'E', 'D', 'F']}
 
 result = dijkstra(graph, 'A', 'F')
-print(result['distances']['F'])
+print(result['distances']['F']) 
+# 7
 print(result['paths']['F'])
+#  ['A', 'C', 'B', 'E', 'D', 'F']
 ```
 
 ---
 
-### ✨ `primes`
+### >  `primes`
 <a id="primes"></a>
 
 ```python
-primes(start=2, limit)
+primes(start, limit)
 ```
 
 Generates a sequence of prime numbers within a specified bounds utilizing the Sieve of Eratosthenes algorithm.
 
-**Signature**
+#### Usage
 ```python
 primes(start: int = 2, limit: int) -> list[int]
 ```
@@ -343,8 +494,10 @@ primes(start: int = 2, limit: int) -> list[int]
 ```python
 from funcbox import primes
 
-print(primes(limit=10))         # [2, 3, 5, 7]
-print(primes(start=10, limit=20)) # [11, 13, 17, 19]
+print(primes(limit=10))
+# [2, 3, 5, 7]
+print(primes(start=10, limit=20))
+# [11, 13, 17, 19]
 ```
 
 ## Disclaimer
