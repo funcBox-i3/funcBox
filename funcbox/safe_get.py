@@ -21,14 +21,23 @@ def _split_path(path: str, separator: str) -> tuple[str, ...]:
     return result
 
 
+def _coerce_index(key: str | int) -> int | object:
+    if isinstance(key, int):
+        return key
+    if isinstance(key, str):
+        if key and (key.isdigit() or (key[0] in "+-" and key[1:].isdigit())):
+            return int(key)
+    return _MISSING
+
+
 def safe_get(
-    dictionary: dict[str, Any],
-    path: str | list[str | int] | tuple[str | int, ...],
-    default: Any = None,
-    return_last_seen: bool = False,
-    separator: str = ".",
+        dictionary: dict[str, Any],
+        path: str | list[str | int] | tuple[str | int, ...],
+        default: Any = None,
+        return_last_seen: bool = False,
+        separator: str = ".",
 ) -> Any:
-    """Fetch a value from a nested dictionary using dot notation.
+    """Fetch a value from nested dictionaries and sequences using a path.
 
     Args:
         dictionary: The source dictionary.
@@ -36,7 +45,7 @@ def safe_get(
             explicit key sequence (e.g. ``["user", 0, "city"]``). An empty
             string or empty sequence returns *dictionary* unchanged.
         default: Returned when any key in the path is missing or an
-            intermediate value is not a dictionary.
+            intermediate value is not traversable.
         return_last_seen: When ``True``, returns the deepest successfully
             resolved value before traversal fails instead of *default*.
         separator: Delimiter used to split a string *path* (default ``"."``).
@@ -56,6 +65,8 @@ def safe_get(
         None
         >>> safe_get({"a": {0: "zero"}}, ["a", 0])
         'zero'
+        >>> safe_get({"employees": [{"name": "Alice"}]}, "employees.0.name")
+        'Alice'
 
     """
     if not path:
@@ -75,11 +86,22 @@ def safe_get(
     current: Any = dictionary
 
     for key in keys:
-        if not isinstance(current, dict):
+        if isinstance(current, dict):
+            next_value = current.get(key, _MISSING)
+            if next_value is _MISSING:
+                return current if return_last_seen else default
+            current = next_value
+            continue
+
+        if isinstance(current, (list, tuple)):
+            index = _coerce_index(key)
+            if index is _MISSING:
+                return current if return_last_seen else default
+            if -len(current) <= index < len(current):
+                current = current[index]
+                continue
             return current if return_last_seen else default
-        next_value = current.get(key, _MISSING)
-        if next_value is _MISSING:
-            return current if return_last_seen else default
-        current = next_value
+
+        return current if return_last_seen else default
 
     return current

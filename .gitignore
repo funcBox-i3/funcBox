@@ -131,9 +131,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-testfile.py
-testfilex.py
 
-# PyPI verification README
+# Project specific ignores
 PYPI_README_VERIFY.md
-/scripts
+/experiments

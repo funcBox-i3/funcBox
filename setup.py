@@ -11,6 +11,7 @@ with open("funcbox/__init__.py") as f:
     )
     version = version_match.group(1) if version_match else "0.0.0"
 
+
 def get_pypi_readme():
     with open("README.md", encoding="utf-8") as f:
         readme = f.read()
@@ -18,6 +19,7 @@ def get_pypi_readme():
     readme = re.sub(r"\[//\]: # \(PYPI_FILTER_START\)[\s\S]*?\[//\]: # \(PYPI_FILTER_END\)\n*", "", readme)
     # Uncomment sections marked for PyPI only
     return re.sub(r"<!-- PYPI_UNCOMMENT_START\n([\s\S]*?)\nPYPI_UNCOMMENT_END -->", r"\1", readme)
+
 
 setup(
     name="funcbox",
