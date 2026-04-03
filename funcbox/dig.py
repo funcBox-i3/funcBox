@@ -31,10 +31,10 @@ def _coerce_index(key: str | int) -> int | object:
 
 
 def _resolve(
-        data: dict[str, Any],
-        path: str | tuple[str | int, ...],
-        default: Any,
-        last: bool,
+    data: dict[str, Any],
+    path: str | tuple[str | int, ...],
+    default: Any,
+    last: bool,
 ) -> Any:
     if not path:
         return data
@@ -65,10 +65,10 @@ def _resolve(
 
 
 def _multi(
-        data: dict[str, Any],
-        paths: list,
-        default: Any,
-        last: bool,
+    data: dict[str, Any],
+    paths: list,
+    default: Any,
+    last: bool,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for p in paths:
@@ -116,7 +116,7 @@ class Dig:
         ...         "name": "Aditya Prasad S",
         ...         "handle": "Pu94X",
         ...         "age": 19,
-        ...         "address": {"city": "Chennai", "zip": "600001"},
+        ...         "address": {"city": "Kanyakumari", "zip": "629000"},
         ...         "projects": [
         ...             {"name": "funcBox",  "stars": 42, "lang": "Python"},
         ...             {"name": "InfiniKit", "stars": 18, "lang": "Kotlin"},
@@ -129,7 +129,7 @@ class Dig:
         >>> d("user.handle")
         'Pu94X'
         >>> d("user.address.city")
-        'Chennai'
+        'Kanyakumari'
         >>> d("user.missing", default="N/A")
         'N/A'
         >>> d("user.projects.0.name")
@@ -138,9 +138,9 @@ class Dig:
         {'user.name': 'Aditya Prasad S', 'user.handle': 'Pu94X', 'user.age': 19}
         >>> addr = d.scope("user.address")
         >>> addr("city")
-        'Chennai'
+        'Kanyakumari'
         >>> addr(["city", "zip"])
-        {'city': 'Chennai', 'zip': '600001'}
+        {'city': 'Kanyakumari', 'zip': '629000'}
 
     """
 
@@ -153,10 +153,10 @@ class Dig:
         self._data = data
 
     def __call__(
-            self,
-            path: str | tuple[str | int, ...] | list,
-            default: Any = None,
-            last: bool = False,
+        self,
+        path: str | tuple[str | int, ...] | list,
+        default: Any = None,
+        last: bool = False,
     ) -> Any:
         """Resolve ``path`` against the wrapped dictionary.
 
@@ -197,8 +197,8 @@ class Dig:
         raise TypeError(msg)
 
     def __getitem__(
-            self,
-            path: str | tuple[str | int, ...] | list,
+        self,
+        path: str | tuple[str | int, ...] | list,
     ) -> Any:
         """Subscript shorthand for ``Dig(path)``, returning ``None`` on failure.
 
@@ -246,14 +246,14 @@ class Dig:
             TypeError: If the value at ``path`` is not a ``dict``.
 
         Examples:
-            >>> d = Dig({"user": {"address": {"city": "Chennai", "zip": "600001"}}})
+            >>> d = Dig({"user": {"address": {"city": "Kanyakumari", "zip": "629000"}}})
             >>> addr = d.scope("user.address")
             >>> addr("city")
-            'Chennai'
+            'Kanyakumari'
             >>> addr["zip"]
-            '600001'
+            '629000'
             >>> addr(["city", "zip"])
-            {'city': 'Chennai', 'zip': '600001'}
+            {'city': 'Kanyakumari', 'zip': '629000'}
 
         """
         sub = _resolve(self._data, path, _MISSING, False)

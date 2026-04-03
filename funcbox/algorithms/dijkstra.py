@@ -46,7 +46,9 @@ def dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict:
             raise ValueError(msg)
         for neighbor, weight in neighbors.items():
             if neighbor not in graph:
-                msg = f"Neighbor {neighbor!r} of node {node!r} is not a node in the graph"
+                msg = (
+                    f"Neighbor {neighbor!r} of node {node!r} is not a node in the graph"
+                )
                 raise ValueError(msg)
             if not isinstance(weight, (int, float)) or isinstance(weight, bool):
                 msg = f"Edge weight from {node!r} to {neighbor!r} must be a number, got {type(weight).__name__!r}"
@@ -85,7 +87,9 @@ def dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict:
             processed_distances = {
                 node: dist for node, dist in distances.items() if dist != float("inf")
             }
-            processed_paths = {node: reconstruct_path(node) for node in processed_distances}
+            processed_paths = {
+                node: reconstruct_path(node) for node in processed_distances
+            }
             return {"distances": processed_distances, "paths": processed_paths}
 
         for neighbor, weight in graph[current_node].items():

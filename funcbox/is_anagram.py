@@ -10,11 +10,11 @@ _NON_WORD_SPACE_RE = re.compile(r"[^\w\s]")
 
 
 def is_anagram(
-        str1: str,
-        str2: str,
-        case: bool = False,
-        spaces: bool = False,
-        punct: bool = False,
+    str1: str,
+    str2: str,
+    case: bool = False,
+    spaces: bool = False,
+    punct: bool = False,
 ) -> bool:
     """Check whether two strings are anagrams.
 

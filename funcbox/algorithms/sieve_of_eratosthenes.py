@@ -64,4 +64,4 @@ def primes(start: int = 2, limit: int | None = None) -> list[int]:
 
     if start <= 2:
         return all_primes
-    return all_primes[bisect.bisect_left(all_primes, start):]
+    return all_primes[bisect.bisect_left(all_primes, start) :]

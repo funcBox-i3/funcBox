@@ -30,7 +30,9 @@ def classify_numbers(numbers: list[int]) -> dict[str, list[int]]:
         raise TypeError(msg)
     for i, n in enumerate(numbers):
         if not isinstance(n, int) or isinstance(n, bool):
-            msg = f"All elements must be integers; got {type(n).__name__!r} at index {i}"
+            msg = (
+                f"All elements must be integers; got {type(n).__name__!r} at index {i}"
+            )
             raise TypeError(msg)
 
     primes: list[int] = []

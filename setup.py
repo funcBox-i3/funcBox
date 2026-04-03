@@ -1,9 +1,14 @@
+import importlib.util
 import re
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
+ROOT = Path(__file__).resolve().parent
+
+
 # Read version without importing the package
-with open("funcbox/__init__.py") as f:
+with open(ROOT / "funcbox" / "__init__.py", encoding="utf-8") as f:
     version_match = re.search(
         r"^__version__ = ['\"]([^'\"]*)['\"]",
         f.read(),
@@ -13,12 +18,31 @@ with open("funcbox/__init__.py") as f:
 
 
 def get_pypi_readme():
-    with open("README.md", encoding="utf-8") as f:
+    prepare_publish_path = ROOT / "experiments" / "prepare_publish.py"
+    if prepare_publish_path.exists():
+        spec = importlib.util.spec_from_file_location(
+            "funcbox_prepare_publish", prepare_publish_path
+        )
+        if spec is not None and spec.loader is not None:
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            generator = getattr(module, "generate_pypi_readme_for_build", None)
+            if callable(generator):
+                readme = generator(
+                    readme_path=ROOT / "README.md",
+                    verify_readme_path=ROOT / "experiments" / "PYPI_README_VERIFY.md",
+                )
+                if isinstance(readme, str) and readme.strip():
+                    return readme
+
+    with open(ROOT / "README.md", encoding="utf-8") as f:
         readme = f.read()
-    # Remove sections marked for GitHub only
-    readme = re.sub(r"\[//\]: # \(PYPI_FILTER_START\)[\s\S]*?\[//\]: # \(PYPI_FILTER_END\)\n*", "", readme)
-    # Uncomment sections marked for PyPI only
-    return re.sub(r"<!-- PYPI_UNCOMMENT_START\n([\s\S]*?)\nPYPI_UNCOMMENT_END -->", r"\1", readme)
+    readme = re.sub(
+        r"<!-- PYPI_FILTER_START -->[\s\S]*?<!-- PYPI_FILTER_END -->\n*", "", readme
+    )
+    return re.sub(
+        r"<!-- PYPI_UNCOMMENT_START\n([\s\S]*?)\nPYPI_UNCOMMENT_END -->", r"\1", readme
+    )
 
 
 setup(
@@ -36,5 +60,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.8",
 )
