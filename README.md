@@ -61,11 +61,18 @@ fibonacci(10)
 # 55
 get_factors(12)
 # [1, 2, 3, 4, 6]
-safe_get({"user": {"profile": {"city": "Chennai"}}}, "user.profile.city", default=None)
-# Chennai
+
+d = Dig({"user": {"name": "Aditya Prasad S", "handle": "Pu94X", "age": 22}})
+d("user.name")
+# 'Aditya Prasad S'
+d(["user.name", "user.handle", "user.age"])
+# {'user.name': 'Aditya Prasad S', 'user.handle': 'Pu94X', 'user.age': 22}
 ```
 
 ## Functions Overview
+
+> [!CAUTION]
+> Functions marked **Beta** are under active development and their API - including parameter names, return types, and behaviour - may change at any time before a stable release. Do not rely on them in production without pinning to a specific version.
 
 #### Algorithms
 
@@ -113,7 +120,7 @@ PYPI_UNCOMMENT_END -->
 
 | Function                | Description                                           | Status |
 |-------------------------|-------------------------------------------------------|--------|
-| [is_anagram](#isanagram) | Checks whether two strings are anagrams of each other | Beta   |
+| [is_anagram](#isanagram) | Checks whether two strings are anagrams of each other | Beta  |
 
 <!-- PYPI_FILTER_END -->
 <!-- PYPI_UNCOMMENT_START
@@ -126,15 +133,15 @@ PYPI_UNCOMMENT_END -->
 
 <!-- PYPI_FILTER_START -->
 
-| Function              | Description                                               | Status |
-|-----------------------|-----------------------------------------------------------|--------|
-| [safe_get](#safe_get) | Fetches nested dictionary values safely with dot notation | Beta   |
+| Function      | Description                                                         | Status |
+|---------------|---------------------------------------------------------------------|--------|
+| [dig](#dig)   | Wraps a nested dict for safe, repeated dot-path lookups             | Beta   |
 
 <!-- PYPI_FILTER_END -->
 <!-- PYPI_UNCOMMENT_START
 | Function | Description |
 |----------|-------------|
-| [safe_get](#safe_get) | Fetches nested dictionary values safely with dot notation |
+| [dig](#dig) | Wraps a nested dict for safe, repeated dot-path lookups |
 PYPI_UNCOMMENT_END -->
 
 ## API Reference
@@ -312,66 +319,148 @@ print(get_factors(7))   # [1]
 
 ---
 
-### > `safe_get`
+### > `dig`
 
-<a id="safe_get"></a>
+<a id="dig"></a>
 
 ```python
-safe_get(dictionary, path, default=None, return_last_seen=False, separator=".")
+dig(data)
 ```
 
-Fetches a value from deeply nested dictionaries and lists using a path string or explicit key sequence.
+Wraps a nested dictionary once and lets you query it repeatedly using dot-path strings, explicit key sequences, or multi-path batches - all through a single, consistent interface.
 
 #### Usage
 
 ```python
-safe_get(
-  dictionary: dict[str, Any],
-  path: str | list[str | int] | tuple[str | int, ...],
-  default: Any = None,
-  return_last_seen: bool = False,
-  separator: str = ".",
-) -> Any
+dig(data: dict[str, Any])
 ```
 
 **Parameters**
 
-- `dictionary` (dict[str, Any]): The source dictionary.
-- `path` (str | list[str | int] | tuple[str | int, ...]): Dot-separated path (for example, `"user.profile.city"` or
-  `"employees.0.name"`) or an explicit sequence of keys.
-- `default` (Any): Value returned when lookup fails.
-- `return_last_seen` (bool): If `True`, returns the deepest resolved value before failure.
-- `separator` (str): Delimiter used when `path` is a string. Defaults to `"."`.
+- `data` (dict[str, Any]): The source dictionary to wrap.
 
 **Raises**
 
-- `TypeError`: Raised if `path` is not a `str`, `list`, or `tuple`, or if `separator` is not a `str`.
+- `TypeError`: Raised if `data` is not a `dict`.
+
+**Path types**
+
+The type of `path` passed to any lookup determines behaviour:
+
+| Type | Behaviour |
+|---|---|
+| `str` | Dot-separated path such as `"user.address.city"`. Numeric segments like `"0"` are automatically treated as list indices when traversing sequences. |
+| `tuple` | Explicit key/index sequence such as `("user", 0, "name")`. Use when keys contain dots or you need unambiguous integer indices. |
+| `list` | **Multi-path batch** - each item is its own `str` or `tuple` path. Returns a `dict` mapping every path string to its resolved value. `default` and `last` apply uniformly. |
+
+**Methods**
+
+| Syntax | Description |
+|---|---|
+| `d(path)` | Resolve a path - returns the value or `None` on failure |
+| `d(path, default=…)` | Same, with an explicit fallback value |
+| `d(path, last=True)` | Returns the deepest resolved value instead of `default` on failure |
+| `d([path1, path2, …])` | Resolve multiple paths in one call - returns a `dict` |
+| `d[path]` | Subscript shorthand for `d(path)` |
+| `path in d` | `True` if the path resolves to an existing key (even if the value is `None`) |
+| `d.scope(path)` | Returns a new `dig` rooted at the sub-dict at `path` |
+
+**Raises** (on lookup)
+
+- `TypeError`: If `path` is not a `str`, `tuple`, or `list`; or if a multi-path list entry is not a `str` or `tuple`.
+- `KeyError`: If `path` passed to `scope()` does not exist.
+- `TypeError`: If the value at `path` passed to `scope()` is not a `dict`.
 
 **Returns**
 
-- `Any`: The resolved value, or `default` (or last seen value when `return_last_seen=True`).
+- `Any` - the resolved value for single-path lookups.
+- `dict[str, Any]` - a mapping of each path to its result for multi-path lookups.
+- `dig` - a new scoped instance when calling `scope()`.
 
 **Examples**
 
 ```python
-from funcbox import safe_get
+from funcbox import Dig
 
-obj = {"user": {"profile": {"address": {"city": "Chennai"}}}}
+data = {
+  "user": {
+    "name": "Aditya Prasad S",
+    "handle": "Pu94X",
+    "age": 19,
+    "email": None,
+    "address": {
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "zip": "600001",
+    },
+    "projects": [
+      {"name": "funcBox", "stars": 42, "lang": "Python"},
+      {"name": "InfiniKit", "stars": 18, "lang": "Kotlin"},
+    ],
+    "settings": {
+      "theme": "dark",
+      "notifications": {"email": True, "push": False},
+    },
+  }
+}
 
-print(safe_get(obj, "user.profile.address.city", default=None))
-# Chennai
-print(safe_get(obj, "user.profile.address.zip", default="unknown"))
-# unknown
-print(safe_get(obj, "user.profile.address.zip", return_last_seen=True))
-# {'city': 'Chennai'}
-print(safe_get({"a": {0: "zero"}}, ["a", 0]))
-# zero
-print(safe_get({"employees": [{"name": "Pu94X"}]}, "employees.0.name"))
-# Pu94X
+d = Dig(data)
+
+# single dot-path
+d("user.name")  # 'Aditya Prasad S'
+d("user.handle")  # 'Pu94X'
+d("user.address.city")  # 'Chennai'
+
+# missing key → default
+d("user.phone", default="N/A")  # 'N/A'
+
+# last=True → deepest resolved value before the miss
+d("user.phone", last=True)  # {'city': 'Chennai', 'state': 'Tamil Nadu', 'zip': '600001'}
+
+# numeric segment traverses a list
+d("user.projects.0.name")  # 'funcBox'
+d("user.projects.1.lang")  # 'Kotlin'
+
+# tuple path - explicit key sequence (useful when keys contain dots)
+d(("user", "projects", 0, "stars"))  # 42
+
+# subscript shorthand
+d["user.age"]  # 19
+d["user.settings.theme"]  # 'dark'
+
+# membership test - True even when the value is None
+"user.email" in d  # True  (key exists, value is None)
+"user.phone" in d  # False (key doesn't exist)
+
+# multi-path: resolve several values in one call
+d(["user.name", "user.handle", "user.age"])
+# {'user.name': 'Aditya Prasad S', 'user.handle': 'Pu94X', 'user.age': 19}
+
+d(["user.projects.0.name", "user.projects.1.name"], default="unknown")
+# {'user.projects.0.name': 'funcBox', 'user.projects.1.name': 'InfiniKit'}
+
+# scope: zoom into a sub-node - avoids repeating the prefix
+addr = d.scope("user.address")
+addr("city")  # 'Chennai'
+addr["zip"]  # '600001'
+addr(["city", "state", "zip"])  # {'city': 'Chennai', 'state': 'Tamil Nadu', 'zip': '600001'}
+
+# scope into a list element
+proj = d.scope("user.projects.0")
+proj("name")  # 'funcBox'
+proj("stars")  # 42
+
+# nested scope
+notif = d.scope("user.settings.notifications")
+notif("email")  # True
+notif("push")  # False
+
+# repr
+repr(d)  # Dig({'user'})
+repr(addr)  # Dig({'city', 'state', 'zip'})
 ```
 
-> Note: In `"employees.0.name"`, `0` is a list index. Numeric segments are used when traversing list or tuple elements
-> by position, while text segments are used as dictionary keys.
+> **Note:** Numeric string segments like `"0"` in a dot-path are automatically coerced to integer indices when the current node is a `list` or `tuple`. Use a `tuple` path with an `int` element (e.g. `("user", "projects", 0, "name")`) for unambiguous index access.
 
 ---
 
