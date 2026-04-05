@@ -4,7 +4,9 @@ from .dig import Dig
 from .fibonacci import fibonacci
 from .get_factors import get_factors
 from .is_anagram import is_anagram
+from .is_null_or_blank import is_null_or_blank
 from .is_prime import is_prime
+from .truncate import truncate
 
 __all__ = [
     "Dig",
@@ -14,8 +16,10 @@ __all__ = [
     "fibonacci",
     "get_factors",
     "is_anagram",
+    "is_null_or_blank",
     "is_prime",
     "primes",
+    "truncate",
 ]
 
 __version__ = "0.3.2"

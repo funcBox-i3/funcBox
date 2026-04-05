@@ -69,8 +69,8 @@ def _multi(
     paths: list,
     default: Any,
     last: bool,
-) -> dict[str, Any]:
-    result: dict[str, Any] = {}
+) -> list[Any]:
+    result: list[Any] = []
     for p in paths:
         if not isinstance(p, (str, tuple)):
             msg = (
@@ -78,8 +78,7 @@ def _multi(
                 f"got {type(p).__name__!r}"
             )
             raise TypeError(msg)
-        key_name = p if isinstance(p, str) else repr(p)
-        result[key_name] = _resolve(data, p, default, last)
+        result.append(_resolve(data, p, default, last))
     return result
 
 
@@ -99,9 +98,11 @@ class Dig:
                   Use when keys contain dots or you need unambiguous integer
                   indices.
     - ``list``  - multi-path batch; each element is its own ``str`` or
-                  ``tuple`` path. Returns a ``dict`` mapping every path string
-                  to its resolved value. ``default`` and ``last`` apply to
-                  every entry uniformly.
+                  ``tuple`` path. Returns an ordered ``list`` whose values
+                  align position-for-position with the input paths; any path
+                  that fails to resolve yields ``default`` (or the deepest
+                  value when ``last=True``). ``default`` and ``last`` apply
+                  to every entry uniformly.
 
     Args:
         data: The source dictionary to wrap. Must be a plain ``dict``.
@@ -135,12 +136,12 @@ class Dig:
         >>> d("user.projects.0.name")
         'funcBox'
         >>> d(["user.name", "user.handle", "user.age"])
-        {'user.name': 'Aditya Prasad S', 'user.handle': 'Pu94X', 'user.age': 19}
+        ['Aditya Prasad S', 'Pu94X', 19]
         >>> addr = d.scope("user.address")
         >>> addr("city")
         'Kanyakumari'
         >>> addr(["city", "zip"])
-        {'city': 'Kanyakumari', 'zip': '629000'}
+        ['Kanyakumari', '629000']
 
     """
 
@@ -170,8 +171,9 @@ class Dig:
                 applied to every entry.
 
         Returns:
-            The resolved value, ``default`` on failure, or a ``dict[str, Any]``
-            when ``path`` is a list.
+            The resolved value, ``default`` on failure, or a ``list[Any]``
+            when ``path`` is a list (values aligned to input path order;
+            missing paths yield ``default``).
 
         Raises:
             TypeError: If ``path`` is not a ``str``, ``tuple``, or ``list``;
@@ -185,8 +187,8 @@ class Dig:
             'not set'
             >>> d("user.email", last=True)
             {'name': 'Aditya Prasad S', 'handle': 'Pu94X'}
-            >>> d(["user.name", "user.handle"])
-            {'user.name': 'Aditya Prasad S', 'user.handle': 'Pu94X'}
+            >>> d(["user.name", "user.handle", "user.missing"])
+            ['Aditya Prasad S', 'Pu94X', None]
 
         """
         if isinstance(path, list):
@@ -253,7 +255,7 @@ class Dig:
             >>> addr["zip"]
             '629000'
             >>> addr(["city", "zip"])
-            {'city': 'Kanyakumari', 'zip': '629000'}
+            ['Kanyakumari', '629000']
 
         """
         sub = _resolve(self._data, path, _MISSING, False)

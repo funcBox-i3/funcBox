@@ -77,7 +77,12 @@ d = Dig({"user": {"name": "Aditya Prasad S", "handle": "Pu94X", "age": 22}})
 d("user.name")
 # 'Aditya Prasad S'
 d(["user.name", "user.handle", "user.age"])
-# {'user.name': 'Aditya Prasad S', 'user.handle': 'Pu94X', 'user.age': 22}
+# ['Aditya Prasad S', 'Pu94X', 22]
+
+truncate("The quick brown fox", 12, word_boundary=True)
+# 'The quick...'
+is_null_or_blank(None), is_null_or_blank("  "), is_null_or_blank("hi")
+# (True, True, False)
 ```
 
 ## Functions Overview
@@ -129,15 +134,19 @@ PYPI_UNCOMMENT_END -->
 
 <!-- PYPI_FILTER_START -->
 
-| Function                | Description                                           | Status |
-|-------------------------|-------------------------------------------------------|--------|
-| [is_anagram](#isanagram) | Checks whether two strings are anagrams of each other | Beta  |
+| Function                                    | Description                                                    | Status |
+|---------------------------------------------|----------------------------------------------------------------|--------|
+| [is_anagram](#isanagram)                    | Checks whether two strings are anagrams of each other          | Beta   |
+| [is_null_or_blank](#is_null_or_blank)       | Returns `True` if a value is `None` or a whitespace-only string | Beta   |
+| [truncate](#truncate)                       | Shortens a string to a maximum length, appending a suffix      | Beta   |
 
 <!-- PYPI_FILTER_END -->
 <!-- PYPI_UNCOMMENT_START
 | Function | Description |
 |----------|-------------|
 | [is_anagram](#isanagram) | Checks whether two strings are anagrams of each other |
+| [is_null_or_blank](#is_null_or_blank) | Returns `True` if a value is `None` or a whitespace-only string |
+| [truncate](#truncate) | Shortens a string to a maximum length, appending a suffix |
 PYPI_UNCOMMENT_END -->
 
 #### Data Utilities
@@ -524,6 +533,93 @@ print(is_anagram("hello", "world"))
 
 ---
 
+### `is_null_or_blank(value)`
+
+<a id="is_null_or_blank"></a>
+
+Returns `True` if *value* is `None` or a string containing only whitespace (or empty). Returns `False` for every other type and for strings with at least one non-whitespace character.
+
+#### Usage
+
+```python
+is_null_or_blank(value: object) -> bool
+```
+
+**Parameters**
+
+- `value` (object): Any value. Only `None` and `str` instances can return `True`.
+
+**Returns**
+
+- `bool`: `True` if `value` is `None`, `""`, or a whitespace-only string; `False` otherwise.
+
+**Examples**
+
+```python
+from funcbox import is_null_or_blank
+
+print(is_null_or_blank(None))      # True
+print(is_null_or_blank(""))        # True
+print(is_null_or_blank("   "))     # True
+print(is_null_or_blank("\t\n"))   # True
+print(is_null_or_blank("hello"))   # False
+print(is_null_or_blank("  hi  "))  # False
+print(is_null_or_blank(0))         # False
+```
+
+---
+
+### `truncate(text, max_length, suffix="...", *, word_boundary=False)`
+
+<a id="truncate"></a>
+
+Shortens *text* to at most *max_length* characters (including the suffix). If the text already fits, it is returned unchanged.
+
+#### Usage
+
+```python
+truncate(text: str, max_length: int, suffix: str = "...", *, word_boundary: bool = False) -> str
+```
+
+**Parameters**
+
+- `text` (str): The source string to truncate.
+- `max_length` (int): Maximum total length of the result, including the suffix. Must be a positive integer ≥ `len(suffix)`.
+- `suffix` (str): Appended after the cut. Defaults to `"..."`.
+- `word_boundary` (bool): When `True`, the cut snaps back to the last whitespace so words are never split. Defaults to `False`.
+
+**Returns**
+
+- `str`: The original string if it fits, otherwise the truncated string with the suffix appended.
+
+**Raises**
+
+- `TypeError`: Raised if `text` or `suffix` is not a `str`, or `max_length` is not a plain `int`.
+- `ValueError`: Raised if `max_length` is not positive or is shorter than `suffix`.
+
+**Examples**
+
+```python
+from funcbox import truncate
+
+print(truncate("Hello, world!", 8))
+# 'Hello...'
+
+print(truncate("Hello, world!", 13))   # fits — returned unchanged
+# 'Hello, world!'
+
+print(truncate("Hello, world!", 10, suffix="…"))
+# 'Hello, wo…'
+
+print(truncate("The quick brown fox", 12, word_boundary=True))
+# 'The quick...'
+
+print(truncate("The quick brown fox", 12))  # no word boundary
+# 'The quick...'
+```
+
+---
+
 ### Data Utilities
 
 ---
@@ -561,7 +657,7 @@ Choose your path format based on your needs:
 - `d(path)`: Get value at path, returns `None` if not found
 - `d(path, default=x)`: Get value, return `x` if path fails
 - `d(path, last=True)`: Return the deepest found value before a miss
-- `d([paths...])`: Resolve multiple paths → returns a `dict`
+- `d([paths...])`: Resolve multiple paths → returns an ordered `list` (same order as input; missing paths yield `None` or `default`)
 - `d[path]`: Shorthand for `d(path)`
 - `path in d`: Check if path exists (True even if value is `None`)
 - `d.scope(path)`: Create a new Dig rooted at that sub-path
@@ -575,7 +671,7 @@ Choose your path format based on your needs:
 **Returns**
 
 - `Any` - the resolved value for single-path lookups.
-- `dict[str, Any]` - a mapping of each path to its result for multi-path lookups.
+- `list[Any]` - values aligned position-for-position with the input paths for multi-path lookups; missing paths yield `None` (or `default`).
 - `dig` - a new scoped instance when calling `scope()`.
 
 **Examples**
@@ -674,13 +770,17 @@ d["user.age"]
 ##### Query multiple paths at once
 
 ```python
-# Pass a list of paths to get all results in one dict
+# Pass a list of paths to get results as an ordered list
 d(["user.name", "user.handle", "user.age"])
-# {'user.name': 'Aditya Prasad S', 'user.handle': 'Pu94X', 'user.age': 19}
+# ['Aditya Prasad S', 'Pu94X', 19]
+
+# Missing paths yield None (or the default) at the same position
+d(["user.name", "user.phone", "user.age"])
+# ['Aditya Prasad S', None, 19]
 
 # Defaults apply to all paths in a multi-path query
 d(["user.projects.0.name", "user.projects.1.name"], default="unknown")
-# {'user.projects.0.name': 'funcBox', 'user.projects.1.name': 'InfiniKit'}
+# ['funcBox', 'InfiniKit']
 ```
 
 ##### Scope into sub-sections (avoid repeating paths)
@@ -696,7 +796,7 @@ addr["zip"]            # Shorthand works too
 # '629000'
 
 addr(["city", "state", "zip"])  # Multi-path relative to scope
-# {'city': 'Kanyakumari', 'state': 'Tamil Nadu', 'zip': '629000'}
+# ['Kanyakumari', 'Tamil Nadu', '629000']
 ```
 
 ##### Scope into list elements
@@ -738,10 +838,23 @@ repr(addr)
 # Dig({'city', 'state', 'zip'})
 ```
 
+> [!NOTE]
+> **JSON integration:** `Dig` only accepts Python `dict` objects. If you're working with JSON, parse it first using `json.loads()` or `json.load()`:
+> ```python
+> import json
+> from funcbox import Dig
+> 
+> json_string = '{"user": {"name": "Aditya"}}'
+> data = json.loads(json_string)  # Parse to dict first
+> d = Dig(data)
+> d("user.name")  # 'Aditya'
+> ```
+
 > [!NOTE] 
 > Numeric string segments like `"0"` in a dot-path are automatically coerced to integer indices when the current node is a `list` or `tuple`. Use a `tuple` path with an `int` element (e.g. `("user", "projects", 0, "name")`) for unambiguous index access.
 
 ---
+
 
 ## Disclaimer
 
