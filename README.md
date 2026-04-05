@@ -66,23 +66,15 @@ from funcbox import *
 
 is_prime(17)
 # True
+
 classify_numbers([2, 3, 4, 5, 6])
 # {'primes': [2, 3, 5], 'composites': [4, 6], 'neither': []}
-fibonacci(10)
-# 55
-get_factors(12)
-# [1, 2, 3, 4, 6]
 
 d = Dig({"user": {"name": "Aditya Prasad S", "handle": "Pu94X", "age": 22}})
 d("user.name")
 # 'Aditya Prasad S'
 d(["user.name", "user.handle", "user.age"])
 # ['Aditya Prasad S', 'Pu94X', 22]
-
-truncate("The quick brown fox", 12, word_boundary=True)
-# 'The quick...'
-is_null_or_blank(None), is_null_or_blank("  "), is_null_or_blank("hi")
-# (True, True, False)
 ```
 
 ## Functions Overview
@@ -136,16 +128,22 @@ PYPI_UNCOMMENT_END -->
 
 | Function                                    | Description                                                    | Status |
 |---------------------------------------------|----------------------------------------------------------------|--------|
+| [fuzzy_search](#fuzzy_search)               | Ranks candidates by fuzzy similarity to a query string         | Beta   |
 | [is_anagram](#isanagram)                    | Checks whether two strings are anagrams of each other          | Beta   |
-| [is_null_or_blank](#is_null_or_blank)       | Returns `True` if a value is `None` or a whitespace-only string | Beta   |
+| [is_null_or_blank](#is_null_or_blank)       | Returns `True` if a value is `None`, a whitespace-only string, or an empty collection | Beta   |
+| [levenshtein_distance](#levenshtein_distance) | Returns the Levenshtein edit distance between two strings    | Beta   |
+| [similarity](#similarity)                   | Scores the fuzzy similarity between two strings                | Beta   |
 | [truncate](#truncate)                       | Shortens a string to a maximum length, appending a suffix      | Beta   |
 
 <!-- PYPI_FILTER_END -->
 <!-- PYPI_UNCOMMENT_START
 | Function | Description |
 |----------|-------------|
+| [fuzzy_search](#fuzzy_search) | Ranks candidates by fuzzy similarity to a query string |
 | [is_anagram](#isanagram) | Checks whether two strings are anagrams of each other |
-| [is_null_or_blank](#is_null_or_blank) | Returns `True` if a value is `None` or a whitespace-only string |
+| [is_null_or_blank](#is_null_or_blank) | Returns `True` if a value is `None`, a whitespace-only string, or an empty collection |
+| [levenshtein_distance](#levenshtein_distance) | Returns the Levenshtein edit distance between two strings |
+| [similarity](#similarity) | Scores the fuzzy similarity between two strings |
 | [truncate](#truncate) | Shortens a string to a maximum length, appending a suffix |
 PYPI_UNCOMMENT_END -->
 
@@ -155,7 +153,7 @@ PYPI_UNCOMMENT_END -->
 
 | Function      | Description                                                         | Status |
 |---------------|---------------------------------------------------------------------|--------|
-| [dig](#dig)   | Wraps a nested dict for safe, repeated dot-path lookups             | Beta   |
+| [dig](#dig)   | Wraps a nested object (dict, list, or tuple) for safe, repeated dot-path lookups | Beta   |
 
 <!-- PYPI_FILTER_END -->
 <!-- PYPI_UNCOMMENT_START
@@ -486,6 +484,179 @@ print(primes(start=10, limit=20))
 
 ---
 
+### `fuzzy_search(query, candidates, *, threshold=0.0, limit=None, key=None)`
+
+<a id="fuzzy_search"></a>
+
+Finds the best fuzzy matches for *query* within *candidates*, scoring each item by a blend of three signals: OSA edit-distance similarity (weight 0.5), ordered subsequence coverage (weight 0.3), and partial-window ratio (weight 0.2). Results are sorted best-first. This function has **zero external dependencies**.
+
+#### Usage
+
+```python
+fuzzy_search(
+    query: str,
+    candidates: Sequence[Any],
+    *,
+    threshold: float = 0.0,
+    limit: int | None = None,
+    key: Callable | None = None,
+) -> list[dict[str, Any]]
+```
+
+**Parameters**
+
+- `query` (str): The search string.
+- `candidates` (Sequence): Items to search through. Must be strings, or use *key* for arbitrary objects.
+- `threshold` (float): Minimum score (inclusive) in `[0.0, 1.0]`. Candidates scoring below this are excluded. Defaults to `0.0`.
+- `limit` (int | None): Maximum number of results to return. `None` returns all matches above the threshold.
+- `key` (callable | None): Extracts the comparison string from each candidate. When `None`, candidates must be strings.
+
+**Returns**
+
+- `list[dict]`: A list of dicts sorted by `'score'` descending, each containing:
+    - `'match'` – the original candidate item.
+    - `'score'` – similarity score as a `float` in `[0.0, 1.0]`.
+
+**Raises**
+
+- `TypeError`: If `query` is not a `str`, `candidates` is not a `Sequence` (or is a bare `str`), `key` is not callable (when provided), or any candidate is not a `str` when no *key* is given.
+- `ValueError`: If `threshold` is outside `[0.0, 1.0]`, or `limit` is not a positive integer.
+
+**Examples**
+
+```python
+from funcbox import fuzzy_search
+
+# Basic string search
+fuzzy_search("pyth", ["Python", "Ruby", "Rust", "PyPy"])
+# [{'match': 'Python', 'score': 0.8333}, {'match': 'PyPy', 'score': 0.75}, ...]
+
+# Tolerate typos
+fuzzy_search("dijktra", ["dijkstra", "binary search", "bubble sort"])
+# [{'match': 'dijkstra', 'score': 0.8804}, ...]
+
+# Filter by minimum score
+fuzzy_search("rust", ["Python", "Ruby", "Rust"], threshold=0.5)
+# [{'match': 'Rust', 'score': 1.0}]
+
+# Limit results
+fuzzy_search("py", ["Python", "PyPy", "Ruby", "Rust"], limit=2)
+# [{'match': 'PyPy', 'score': ...}, {'match': 'Python', 'score': ...}]
+
+# Search objects with a key function
+people = [{"name": "Alice"}, {"name": "Alicia"}, {"name": "Bob"}]
+fuzzy_search("alic", people, key=lambda p: p["name"])
+# [{'match': {'name': 'Alice'}, 'score': ...}, {'match': {'name': 'Alicia'}, 'score': ...}]
+
+# Score meaning: 1.0 = exact match, 0.0 = completely dissimilar
+fuzzy_search("hello", ["hello", "helo", "world"])
+# [{'match': 'hello', 'score': 1.0}, {'match': 'helo', 'score': 0.85}, {'match': 'world', 'score': 0.1}]
+```
+
+---
+
+### `similarity(query, candidate)`
+
+<a id="similarity"></a>
+
+Scores the fuzzy similarity between two strings using a blend of three signals: OSA edit-distance ratio (weight 0.5), ordered subsequence coverage (weight 0.3), and partial-window ratio (weight 0.2). OSA distance correctly treats transpositions of adjacent characters as a single edit, improving accuracy over plain Levenshtein for common typos. This is the same scoring function used internally by [`fuzzy_search`](#fuzzy_search), exposed for cases where you want to score a single pair directly.
+
+#### Usage
+
+```python
+similarity(query: str, candidate: str) -> float
+```
+
+**Parameters**
+
+- `query` (str): The reference string (e.g. the user's search term).
+- `candidate` (str): The string to score against *query*.
+
+**Returns**
+
+- `float`: A score in `[0.0, 1.0]`. `1.0` means identical (case-insensitively); `0.0` means completely dissimilar.
+
+**Raises**
+
+- `TypeError`: If either argument is not a `str`.
+
+**Examples**
+
+```python
+from funcbox import similarity
+
+print(similarity("hello", "hello"))
+# 1.0
+
+print(similarity("pyth", "Python"))   # partial prefix
+# 0.8333
+
+print(similarity("dijktra", "dijkstra"))  # typo tolerance
+# 0.8804
+
+print(similarity("pytohn", "python"))  # transposition — 1 edit (OSA)
+# 0.7833
+
+print(similarity("search", "fuzzy_search"))  # substring in longer string
+# 0.75
+
+print(similarity("abc", "xyz"))  # no overlap
+# 0.0
+
+# Sort a list manually by score
+words = ["Python", "PyPy", "Ruby", "Rust"]
+words.sort(key=lambda w: similarity("pyth", w), reverse=True)
+print(words)
+# ['Python', 'PyPy', 'Rust', 'Ruby']
+```
+
+---
+
+### `levenshtein_distance(a, b)`
+
+<a id="levenshtein_distance"></a>
+
+Returns the Levenshtein edit distance between two strings — i.e., the minimum number of single-character **insertions**, **deletions**, and **substitutions** required to transform *a* into *b*. Transpositions of adjacent characters count as **two** edits (one deletion + one insertion). For transposition-aware distance, see [`similarity`](#similarity) which uses OSA distance internally.
+
+#### Usage
+
+```python
+levenshtein_distance(a: str, b: str) -> int
+```
+
+**Parameters**
+
+- `a` (str): First string.
+- `b` (str): Second string.
+
+**Returns**
+
+- `int`: Non-negative edit distance. `0` means the strings are identical.
+
+**Raises**
+
+- `TypeError`: If either argument is not a `str`.
+
+**Examples**
+
+```python
+from funcbox import levenshtein_distance
+
+print(levenshtein_distance("kitten", "sitting"))
+# 3
+
+print(levenshtein_distance("hello", "hello"))
+# 0
+
+print(levenshtein_distance("dijktra", "dijkstra"))  # 1 substitution
+# 1
+
+print(levenshtein_distance("", "abc"))
+# 3
+```
+
+---
+
 ### `is_anagram(str1, str2, case=False, spaces=False, punct=False)`
 
 <a id="isanagram"></a>
@@ -537,7 +708,7 @@ print(is_anagram("hello", "world"))
 
 <a id="is_null_or_blank"></a>
 
-Returns `True` if *value* is `None` or a string containing only whitespace (or empty). Returns `False` for every other type and for strings with at least one non-whitespace character.
+Returns `True` if *value* is `None`, a whitespace-only string (or empty string), or an empty collection. Emptiness for collections is detected via `len()`, which is O(1) for all built-in types. Returns `False` for non-empty collections, non-`None` non-`Sized` types, and strings with at least one non-whitespace character.
 
 #### Usage
 
@@ -547,24 +718,32 @@ is_null_or_blank(value: object) -> bool
 
 **Parameters**
 
-- `value` (object): Any value. Only `None` and `str` instances can return `True`.
+- `value` (object): Any value. `None`, `str`, and any [`Sized`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Sized) (e.g. `list`, `dict`, `tuple`, `set`, `frozenset`, `bytes`, `bytearray`, or custom classes implementing `__len__`) are all evaluated.
 
 **Returns**
 
-- `bool`: `True` if `value` is `None`, `""`, or a whitespace-only string; `False` otherwise.
+- `bool`: `True` if `value` is:
+    - `None`
+    - An empty string (`""`) or a string of only whitespace.
+    - Any empty `Sized` (i.e. `len(value) == 0`).
+
+  `False` otherwise.
 
 **Examples**
 
 ```python
 from funcbox import is_null_or_blank
 
-print(is_null_or_blank(None))      # True
-print(is_null_or_blank(""))        # True
-print(is_null_or_blank("   "))     # True
-print(is_null_or_blank("\t\n"))   # True
-print(is_null_or_blank("hello"))   # False
-print(is_null_or_blank("  hi  "))  # False
-print(is_null_or_blank(0))         # False
+print(is_null_or_blank(None))
+# True
+print(is_null_or_blank("\t\n"))
+# True
+print(is_null_or_blank([]))
+# True
+print(is_null_or_blank([1, 2]))
+# False
+print(is_null_or_blank({}))
+# True
 ```
 
 ---

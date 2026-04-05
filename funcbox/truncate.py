@@ -63,9 +63,7 @@ def truncate(
         msg = f"max_length must be positive, got {max_length!r}"
         raise ValueError(msg)
     if max_length < len(suffix):
-        msg = (
-            f"max_length ({max_length}) must be >= len(suffix) ({len(suffix)})"
-        )
+        msg = f"max_length ({max_length}) must be >= len(suffix) ({len(suffix)})"
         raise ValueError(msg)
 
     if len(text) <= max_length:

@@ -21,7 +21,8 @@ def get_pypi_readme():
     prepare_publish_path = ROOT / "experiments" / "prepare_publish.py"
     if prepare_publish_path.exists():
         spec = importlib.util.spec_from_file_location(
-            "funcbox_prepare_publish", prepare_publish_path
+            "funcbox_prepare_publish",
+            prepare_publish_path,
         )
         if spec is not None and spec.loader is not None:
             module = importlib.util.module_from_spec(spec)
@@ -38,10 +39,14 @@ def get_pypi_readme():
     with open(ROOT / "README.md", encoding="utf-8") as f:
         readme = f.read()
     readme = re.sub(
-        r"<!-- PYPI_FILTER_START -->[\s\S]*?<!-- PYPI_FILTER_END -->\n*", "", readme
+        r"<!-- PYPI_FILTER_START -->[\s\S]*?<!-- PYPI_FILTER_END -->\n*",
+        "",
+        readme,
     )
     return re.sub(
-        r"<!-- PYPI_UNCOMMENT_START\n([\s\S]*?)\nPYPI_UNCOMMENT_END -->", r"\1", readme
+        r"<!-- PYPI_UNCOMMENT_START\n([\s\S]*?)\nPYPI_UNCOMMENT_END -->",
+        r"\1",
+        readme,
     )
 
 
