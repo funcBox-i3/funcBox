@@ -50,13 +50,15 @@ def truncate(
         'Hi'
 
     """
-    if not isinstance(text, str):
+    if type(text) is not str and not isinstance(text, str):
         msg = f"text must be a str, got {type(text).__name__!r}"
         raise TypeError(msg)
-    if not isinstance(suffix, str):
+    if type(suffix) is not str and not isinstance(suffix, str):
         msg = f"suffix must be a str, got {type(suffix).__name__!r}"
         raise TypeError(msg)
-    if not isinstance(max_length, int) or isinstance(max_length, bool):
+    if type(max_length) is not int and (
+        not isinstance(max_length, int) or isinstance(max_length, bool)
+    ):
         msg = f"max_length must be an int, got {type(max_length).__name__!r}"
         raise TypeError(msg)
     if max_length <= 0:

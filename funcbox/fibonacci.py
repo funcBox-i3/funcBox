@@ -41,6 +41,11 @@ def fibonacci(n: int, output_type: str = "int") -> int | list[int]:
     if output_type == "int":
         if n == 0:
             return 0
+        if n < 100:
+            a, b = 0, 1
+            for _ in range(n - 1):
+                a, b = b, a + b
+            return b
         a, b = 0, 1
         for bit in range(n.bit_length() - 1, -1, -1):
             c = a * (2 * b - a)
@@ -55,10 +60,14 @@ def fibonacci(n: int, output_type: str = "int") -> int | list[int]:
             return []
         if n == 1:
             return [0]
+        if n == 2:
+            return [0, 1]
         fib_list: list[int] = [0] * n
         fib_list[1] = 1
+        a, b = 0, 1
         for i in range(2, n):
-            fib_list[i] = fib_list[i - 1] + fib_list[i - 2]
+            a, b = b, a + b
+            fib_list[i] = b
         return fib_list
     msg = "output_type must be 'int' or 'list'"
     raise ValueError(msg)

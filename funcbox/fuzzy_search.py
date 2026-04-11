@@ -39,10 +39,10 @@ def levenshtein_distance(a: str, b: str) -> int:
         3
 
     """
-    if not isinstance(a, str):
+    if type(a) is not str and not isinstance(a, str):
         msg = f"a must be a str, got {type(a).__name__!r}"
         raise TypeError(msg)
-    if not isinstance(b, str):
+    if type(b) is not str and not isinstance(b, str):
         msg = f"b must be a str, got {type(b).__name__!r}"
         raise TypeError(msg)
 
@@ -53,21 +53,30 @@ def levenshtein_distance(a: str, b: str) -> int:
     if not b:
         return len(a)
 
+    # Always iterate over the longer string, keep shorter in `b`
     if len(a) < len(b):
         a, b = b, a
 
-    prev = list(range(len(b) + 1))
-    for i, ca in enumerate(a, 1):
-        curr = [i] + [0] * len(b)
-        for j, cb in enumerate(b, 1):
-            curr[j] = min(
-                prev[j] + 1,
-                curr[j - 1] + 1,
-                prev[j - 1] + (ca != cb),
-            )
-        prev = curr
+    lb = len(b)
+    # Two pre-allocated rows; swap pointers instead of list creation
+    prev = list(range(lb + 1))
+    curr = [0] * (lb + 1)
 
-    return prev[-1]
+    for ca in a:
+        curr[0] = prev[0] + 1
+        prev_diag = prev[0]  # prev[j-1] before updating j
+        for j in range(1, lb + 1):
+            cb = b[j - 1]
+            prev_j = prev[j]
+            curr[j] = min(
+                prev_j + 1,  # deletion
+                curr[j - 1] + 1,  # insertion
+                prev_diag + (ca != cb),  # substitution
+            )
+            prev_diag = prev_j
+        prev, curr = curr, prev  # swap without realloc
+
+    return prev[lb]
 
 
 def _osa_distance(a: str, b: str) -> int:
@@ -82,31 +91,38 @@ def _osa_distance(a: str, b: str) -> int:
     """
     if a == b:
         return 0
-    if not a:
-        return len(b)
-    if not b:
-        return len(a)
-
     la, lb = len(a), len(b)
-    dp = [[0] * (lb + 1) for _ in range(la + 1)]
+    if la < lb:
+        a, b = b, a
+        la, lb = lb, la
 
-    for i in range(la + 1):
-        dp[i][0] = i
-    for j in range(lb + 1):
-        dp[0][j] = j
+    if lb == 0:
+        return la
+
+    # Three rows for OSA (needs i-2 row for transposition check)
+    v2 = list(range(lb + 1))  # i-2
+    v1 = list(range(lb + 1))  # i-1
+    v0 = [0] * (lb + 1)  # current
 
     for i in range(1, la + 1):
+        ai = a[i - 1]  # cache once per outer iteration
+        v0[0] = i
+        # First cell: no transposition possible (j == 1, i == 1 handled below)
         for j in range(1, lb + 1):
-            cost = 0 if a[i - 1] == b[j - 1] else 1
-            dp[i][j] = min(
-                dp[i - 1][j] + 1,
-                dp[i][j - 1] + 1,
-                dp[i - 1][j - 1] + cost,
+            bj = b[j - 1]
+            cost = 0 if ai == bj else 1
+            res = min(
+                v1[j] + 1,  # deletion
+                v0[j - 1] + 1,  # insertion
+                v1[j - 1] + cost,  # substitution
             )
-            if i > 1 and j > 1 and a[i - 1] == b[j - 2] and a[i - 2] == b[j - 1]:
-                dp[i][j] = min(dp[i][j], dp[i - 2][j - 2] + 1)
-
-    return dp[la][lb]
+            if i > 1 and j > 1 and ai == b[j - 2] and a[i - 2] == bj:
+                t = v2[j - 2] + 1
+                res = min(res, t)
+            v0[j] = res
+        v2, v1, v0 = v1, v0, v2  # rotate without allocation
+        v0[0] = 0  # reset first cell of new scratch row
+    return v1[lb]
 
 
 def _partial_window_ratio(query: str, candidate: str) -> float:
@@ -126,6 +142,10 @@ def _partial_window_ratio(query: str, candidate: str) -> float:
         return 1.0
     if lq > lc:
         return 0.0
+
+    # Optimization: if query is a substring, ratio is 1.0
+    if query in candidate:
+        return 1.0
 
     best = 0.0
     for start in range(lc - lq + 1):
@@ -183,24 +203,33 @@ def similarity(query: str, candidate: str) -> float:
         0.0
 
     """
-    if not isinstance(query, str):
+    if type(query) is not str and not isinstance(query, str):
         msg = f"query must be a str, got {type(query).__name__!r}"
         raise TypeError(msg)
-    if not isinstance(candidate, str):
+    if type(candidate) is not str and not isinstance(candidate, str):
         msg = f"candidate must be a str, got {type(candidate).__name__!r}"
         raise TypeError(msg)
 
     q = query.lower()
     c = candidate.lower()
 
+    if q == c:
+        return 1.0
+
     max_len = max(len(q), len(c))
     osa_ratio = 1.0 if max_len == 0 else 1.0 - _osa_distance(q, c) / max_len
 
-    qi = 0
-    for ch in c:
-        if qi < len(q) and ch == q[qi]:
-            qi += 1
-    subseq = qi / len(q) if q else 1.0
+    # If strings are very different, short-circuit
+    if osa_ratio < 0.2 and q not in c:
+        return round(0.5 * osa_ratio, 4)
+
+    # Faster subsequence check
+    it = iter(c)
+    count = 0
+    for char in q:
+        if char in it:
+            count += 1
+    subseq = count / len(q) if q else 1.0
 
     partial = _partial_window_ratio(q, c)
 

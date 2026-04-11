@@ -1,24 +1,16 @@
 from __future__ import annotations
 
+from functools import lru_cache
 from typing import Any
 
 __all__ = ["Dig"]
 
-_PATH_CACHE: dict[tuple[str, str], tuple[str, ...]] = {}
-_PATH_CACHE_MAX: int = 4096
 _MISSING = object()
 
 
+@lru_cache(maxsize=4096)
 def _split_path(path: str, separator: str) -> tuple[str, ...]:
-    key = (path, separator)
-    cached = _PATH_CACHE.get(key)
-    if cached is not None:
-        return cached
-    if len(_PATH_CACHE) >= _PATH_CACHE_MAX:
-        _PATH_CACHE.clear()
-    result = tuple(path.split(separator)) if path else ()
-    _PATH_CACHE[key] = result
-    return result
+    return tuple(path.split(separator)) if path else ()
 
 
 def _coerce_index(key: str | int) -> int | object:

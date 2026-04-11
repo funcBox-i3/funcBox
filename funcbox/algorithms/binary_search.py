@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import bisect
 from collections.abc import Sequence
 from typing import Any
 
@@ -30,13 +31,8 @@ def binary_search(arr: Sequence, target: Any) -> int:
         msg = "arr must be a Sequence (e.g. list, tuple, range)"
         raise TypeError(msg)
 
-    lo, hi = 0, len(arr) - 1
-    while lo <= hi:
-        mid = (lo + hi) >> 1
-        if arr[mid] == target:
-            return mid
-        if arr[mid] < target:
-            lo = mid + 1
-        else:
-            hi = mid - 1
+    # Use bisect to find the position
+    idx = bisect.bisect_left(arr, target)
+    if idx < len(arr) and arr[idx] == target:
+        return idx
     return -1

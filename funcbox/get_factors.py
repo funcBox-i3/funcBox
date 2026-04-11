@@ -31,11 +31,13 @@ def get_factors(num: int) -> list[int]:
         return []
 
     factors = [1]
-    for i in range(2, isqrt(num) + 1):
+    limit = isqrt(num)
+    for i in range(2, limit + 1):
         if num % i == 0:
             factors.append(i)
-            if i != num // i:
-                factors.append(num // i)
+            other = num // i
+            if i != other:
+                factors.append(other)
 
     factors.sort()
     return factors

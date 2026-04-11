@@ -69,13 +69,6 @@ def dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict:
     priority_queue = [(0, start_node)]
     visited = set()
 
-    def reconstruct_path(node: Any) -> list[Any]:
-        path = []
-        while node is not None:
-            path.append(node)
-            node = predecessors[node]
-        return path[::-1]
-
     while priority_queue:
         current_distance, current_node = heapq.heappop(priority_queue)
 
@@ -84,13 +77,7 @@ def dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict:
         visited.add(current_node)
 
         if end_node is not None and current_node == end_node:
-            processed_distances = {
-                node: dist for node, dist in distances.items() if dist != float("inf")
-            }
-            processed_paths = {
-                node: reconstruct_path(node) for node in processed_distances
-            }
-            return {"distances": processed_distances, "paths": processed_paths}
+            break
 
         for neighbor, weight in graph[current_node].items():
             if neighbor in visited:
@@ -101,8 +88,17 @@ def dijkstra(graph: dict, start_node: Any, end_node: Any = None) -> dict:
                 predecessors[neighbor] = current_node
                 heapq.heappush(priority_queue, (distance, neighbor))
 
-    paths = {
-        node: reconstruct_path(node) if distances[node] != float("inf") else None
-        for node in graph
+    def reconstruct_path(node: Any) -> list[Any] | None:
+        if distances[node] == float("inf"):
+            return None
+        path = []
+        curr = node
+        while curr is not None:
+            path.append(curr)
+            curr = predecessors[curr]
+        return path[::-1]
+
+    return {
+        "distances": distances,
+        "paths": {node: reconstruct_path(node) for node in graph},
     }
-    return {"distances": distances, "paths": paths}

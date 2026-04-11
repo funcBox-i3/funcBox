@@ -2,11 +2,11 @@
 
 # FuncBox
 
-A lightweight Python utility library for common mathematical and algorithmic tasks.
+A lightweight Python utility library for common mathematical, algorithmic, and functional tasks.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![PyPI Version](https://img.shields.io/pypi/v/funcbox.svg?logo=pypi&logoColor=white)](https://pypi.org/project/funcbox/)
+[![PyPI Version](https://img.shields.io/badge/PyPI-0.4.2-blue.svg?logo=pypi&logoColor=white)](https://pypi.org/project/funcbox/)
 [![GitHub](https://img.shields.io/badge/GitHub-funcBox-181717.svg?logo=github&logoColor=white)](https://github.com/funcBox-i3/funcBox)
 
 </div>
@@ -38,8 +38,6 @@ or
 python -m pip install -U funcbox
 ```
 
-<!-- PYPI_FILTER_START -->
-
 ### Beta Version (Pre-release from GitHub):
 
 ```bash
@@ -51,8 +49,6 @@ or
 ```bash
 python -m pip install git+https://github.com/funcBox-i3/funcBox.git
 ```
-
-<!-- PYPI_FILTER_END -->
 
 ### Requirements
 
@@ -80,87 +76,47 @@ d(["user.name", "user.handle", "user.age"])
 ## Functions Overview
 
 > [!IMPORTANT]
-> Functions marked **Beta** are under active development and their API - including parameter names, return types, and behaviour - may change at any time before a stable release. Do not rely on them in production. For stable, published versions of the library, see the [PyPI project page](https://pypi.org/project/funcbox/).
+> Functions marked as **Beta** are under active development and their API - including parameter names, return types, and behaviour - may change at any time before a stable release.
 
 #### Algorithms
 
-<!-- PYPI_FILTER_START -->
-
-| Function                        | Description                                                     | Status    |
-|---------------------------------|-----------------------------------------------------------------|-----------|
-| [binary_search](#binary_search) | Searches for a value in a sorted sequence                       | Beta      |
-| [dijkstra](#dijkstra)           | Calculates shortest paths in a graph using Dijkstra's algorithm | Published |
-
-<!-- PYPI_FILTER_END -->
-<!-- PYPI_UNCOMMENT_START
-| Function | Description |
-|----------|-------------|
-| [binary_search](#binary_search) | Searches for a value in a sorted sequence |
-| [dijkstra](#dijkstra) | Calculates shortest paths in a graph using Dijkstra's algorithm |
-PYPI_UNCOMMENT_END -->
+| Function | Description | Status |
+|----------|-------------|--------|
+| [binary_search](#binary_search) | Searches for a value in a sorted sequence | Published |
+| [dijkstra](#dijkstra) | Calculates shortest paths in a graph using Dijkstra's algorithm | Published |
+| [knapsack](#knapsack) | Solves the 0/1 knapsack optimisation problem | Published |
 
 #### Number Theory
 
-<!-- PYPI_FILTER_START -->
-
-| Function                              | Description                                                     | Status    |
-|---------------------------------------|-----------------------------------------------------------------|-----------|
-| [classify_numbers](#classify_numbers) | Categorizes integers into prime, composite, and neutral subsets | Beta      |
-| [fibonacci](#fibonacci)               | Computes the $n$-th Fibonacci term or sequence                  | Published |
-| [get_factors](#get_factors)           | Computes all proper divisors of an integer                      | Published |
-| [is_prime](#is_prime)                 | Determines whether a given integer is prime                     | Published |
-| [primes](#primes)                     | Generates primes within a range via the Sieve of Eratosthenes   | Published |
-
-<!-- PYPI_FILTER_END -->
-<!-- PYPI_UNCOMMENT_START
-| Function | Description |
-|----------|-------------|
-| [classify_numbers](#classify_numbers) | Categorizes integers into prime, composite, and neutral subsets |
-| [fibonacci](#fibonacci) | Computes the $n$-th Fibonacci term or sequence |
-| [get_factors](#get_factors) | Computes all proper divisors of an integer |
-| [is_prime](#is_prime) | Determines whether a given integer is prime |
-| [primes](#primes) | Generates primes within a range via the Sieve of Eratosthenes |
-PYPI_UNCOMMENT_END -->
+| Function | Description | Status |
+|----------|-------------|--------|
+| [classify_numbers](#classify_numbers) | Categorizes integers into prime, composite, and neutral subsets | Published |
+| [fibonacci](#fibonacci) | Computes the $n$-th Fibonacci term or sequence | Published |
+| [get_factors](#get_factors) | Computes all proper divisors of an integer | Published |
+| [is_prime](#is_prime) | Determines whether a given integer is prime | Published |
+| [primes](#primes) | Generates primes within a range via the Sieve of Eratosthenes | Published |
 
 #### String Processing
 
-<!-- PYPI_FILTER_START -->
-
-| Function                                    | Description                                                    | Status |
-|---------------------------------------------|----------------------------------------------------------------|--------|
-| [fuzzy_search](#fuzzy_search)               | Ranks candidates by fuzzy similarity to a query string         | Beta   |
-| [is_anagram](#isanagram)                    | Checks whether two strings are anagrams of each other          | Beta   |
-| [is_null_or_blank](#is_null_or_blank)       | Returns `True` if a value is `None`, a whitespace-only string, or an empty collection | Beta   |
-| [levenshtein_distance](#levenshtein_distance) | Returns the Levenshtein edit distance between two strings    | Beta   |
-| [similarity](#similarity)                   | Scores the fuzzy similarity between two strings                | Beta   |
-| [truncate](#truncate)                       | Shortens a string to a maximum length, appending a suffix      | Beta   |
-
-<!-- PYPI_FILTER_END -->
-<!-- PYPI_UNCOMMENT_START
-| Function | Description |
-|----------|-------------|
-| [fuzzy_search](#fuzzy_search) | Ranks candidates by fuzzy similarity to a query string |
-| [is_anagram](#isanagram) | Checks whether two strings are anagrams of each other |
-| [is_null_or_blank](#is_null_or_blank) | Returns `True` if a value is `None`, a whitespace-only string, or an empty collection |
-| [levenshtein_distance](#levenshtein_distance) | Returns the Levenshtein edit distance between two strings |
-| [similarity](#similarity) | Scores the fuzzy similarity between two strings |
-| [truncate](#truncate) | Shortens a string to a maximum length, appending a suffix |
-PYPI_UNCOMMENT_END -->
+| Function | Description | Status |
+|----------|-------------|--------|
+| [chunk](#chunk) | Splits an iterable into consecutive fixed-size chunks | Published |
+| [clamp](#clamp) | Clamps a number to an inclusive `[lo, hi]` range | Published |
+| [deep_merge](#deep_merge) | Recursively merges two dicts, preserving nested keys | Published |
+| [flatten](#flatten) | Flattens a nested iterable to a single list | Published |
+| [fuzzy_search](#fuzzy_search) | Ranks candidates by fuzzy similarity to a query string | Published |
+| [group_by](#group_by) | Groups iterable elements by a key function or attribute name | Published |
+| [is_anagram](#isanagram) | Checks whether two strings are anagrams of each other | Published |
+| [is_null_or_blank](#is_null_or_blank) | Returns `True` if a value is `None`, a whitespace-only string, or an empty collection | Published |
+| [levenshtein_distance](#levenshtein_distance) | Returns the Levenshtein edit distance between two strings | Published |
+| [similarity](#similarity) | Scores the fuzzy similarity between two strings | Published |
+| [truncate](#truncate) | Shortens a string to a maximum length, appending a suffix | Published |
 
 #### Data Utilities
 
-<!-- PYPI_FILTER_START -->
-
-| Function      | Description                                                         | Status |
-|---------------|---------------------------------------------------------------------|--------|
-| [dig](#dig)   | Wraps a nested object (dict, list, or tuple) for safe, repeated dot-path lookups | Beta   |
-
-<!-- PYPI_FILTER_END -->
-<!-- PYPI_UNCOMMENT_START
-| Function | Description |
-|----------|-------------|
-| [dig](#dig) | Wraps a nested dict for safe, repeated dot-path lookups |
-PYPI_UNCOMMENT_END -->
+| Function | Description | Status |
+|----------|-------------|--------|
+| [dig](#dig) | Wraps a nested object (dict, list, or tuple) for safe, repeated dot-path lookups | Published |
 
 ## API Reference
 
@@ -276,6 +232,221 @@ print(result['distances']['F'])
 # 7
 print(result['paths']['F'])
 #  ['A', 'C', 'B', 'E', 'D', 'F']
+```
+
+---
+
+### `deep_merge(base, override)`
+
+<a id="deep_merge"></a>
+
+Recursively merge *override* into *base*, returning a **new** dict. Unlike `{**base, **override}` (shallow merge), this descends into nested dicts so deeply nested keys are merged rather than overwritten.
+
+#### Usage
+
+```python
+deep_merge(base: dict, override: dict) -> dict
+```
+
+**Parameters**
+
+- `base` (dict): The starting dictionary.
+- `override` (dict): Dictionary whose values take precedence. Keys absent from `base` are added.
+
+**Returns**
+
+- `dict`: A new merged dict. Neither input is mutated.
+
+**Raises**
+
+- `TypeError`: If either argument is not a `dict`.
+
+**Examples**
+
+```python
+from funcbox import deep_merge
+
+base = {"db": {"host": "localhost", "port": 5432}, "debug": False}
+override = {"db": {"port": 5433, "name": "prod"}, "debug": True}
+
+result = deep_merge(base, override)
+# {'db': {'host': 'localhost', 'port': 5433, 'name': 'prod'}, 'debug': True}
+
+# Shallow merge (built-in) would have lost 'host':
+# {**base, **override} => {'db': {'port': 5433, 'name': 'prod'}, 'debug': True}  ← 'host' gone!
+```
+
+---
+
+### `group_by(iterable, key)`
+
+<a id="group_by"></a>
+
+Group elements of *iterable* by a key function or string attribute. Unlike `itertools.groupby`, **no pre-sorting is required** — a single pass collects all groups.
+
+#### Usage
+
+```python
+group_by(iterable: Iterable, key: callable | str) -> dict
+```
+
+**Parameters**
+
+- `iterable`: Any iterable of items.
+- `key`: Either a **callable** (invoked on each item) or a **string** used as a `dict` key or object attribute.
+
+**Returns**
+
+- `dict`: Maps each distinct key value to a list of items that produced it. First-seen key order is preserved.
+
+**Raises**
+
+- `TypeError`: If `iterable` is not iterable or `key` is not a str or callable.
+- `KeyError`: If a string `key` is not found on an item.
+
+**Examples**
+
+```python
+from funcbox import group_by
+
+# Group by first letter
+words = ["apple", "ant", "banana", "bear", "cherry"]
+group_by(words, lambda w: w[0])
+# {'a': ['apple', 'ant'], 'b': ['banana', 'bear'], 'c': ['cherry']}
+
+# Group dicts by a string key
+people = [{"name": "Alice", "dept": "Eng"}, {"name": "Bob", "dept": "HR"},
+          {"name": "Carol", "dept": "Eng"}]
+group_by(people, "dept")
+# {'Eng': [{'name': 'Alice', ...}, {'name': 'Carol', ...}], 'HR': [{'name': 'Bob', ...}]}
+
+# Group numbers by remainder
+group_by(range(10), lambda n: n % 3)
+# {0: [0, 3, 6, 9], 1: [1, 4, 7], 2: [2, 5, 8]}
+```
+
+---
+
+### Number Theory
+
+---
+<a id="knapsack"></a>
+
+Solves the **0/1 knapsack** problem: select a subset of items to maximise total value while keeping total weight ≤ `capacity`. Each item may be chosen at most once. Uses a space-optimised 1-D rolling DP array so memory is O(capacity) rather than O(n × capacity).
+
+#### Usage
+
+```python
+knapsack(weights: list[int], values: list[int | float], capacity: int) -> dict
+```
+
+**Parameters**
+
+- `weights` (list[int]): Non-negative integer weight of each item.
+- `values` (list[int | float]): Non-negative numeric value of each item.
+- `capacity` (int): Maximum total weight allowed.
+
+**Returns**
+
+- `dict` with keys:
+    - `'max_value'` – maximum achievable value.
+    - `'selected'` – 0-based indices of chosen items.
+    - `'total_weight'` – combined weight of selected items.
+
+**Raises**
+
+- `TypeError`: If inputs are not the correct types.
+- `ValueError`: If lists have unequal length, capacity is negative, or any weight/value is negative.
+
+**Examples**
+
+```python
+from funcbox import knapsack
+
+result = knapsack([2, 3, 4, 5], [3, 4, 5, 6], capacity=8)
+print(result["max_value"])    # 10
+print(result["selected"])     # [1, 2]  (0-indexed)
+print(result["total_weight"]) # 7
+```
+
+---
+
+### `merge_sort(arr, *, key=None, reverse=False)`
+
+<a id="merge_sort"></a>
+
+Sort *arr* using a **bottom-up iterative merge sort** — no recursion, no call-stack pressure. Time O(n log n), space O(n).
+
+#### Usage
+
+```python
+merge_sort(arr: list, *, key=None, reverse: bool = False) -> list
+```
+
+**Parameters**
+
+- `arr` (list): The list to sort. Not modified in place.
+- `key` (callable | None): Key extraction function, same semantics as `sorted()`.
+- `reverse` (bool): If `True`, sort descending.
+
+**Returns**
+
+- `list`: A new sorted list.
+
+**Raises**
+
+- `TypeError`: If `arr` is not a list.
+
+**Examples**
+
+```python
+from funcbox import merge_sort
+
+print(merge_sort([3, 1, 4, 1, 5, 9]))
+# [1, 1, 3, 4, 5, 9]
+print(merge_sort([3, 1, 4], reverse=True))
+# [4, 3, 1]
+print(merge_sort(["banana", "apple", "fig"], key=len))
+# ['fig', 'apple', 'banana']
+```
+
+---
+
+### `quick_sort(arr, *, key=None, reverse=False)`
+
+<a id="quick_sort"></a>
+
+Sort *arr* using **3-way introsort** with median-of-three pivot selection and an insertion-sort fallback for small slices (≤ 16 elements). Average O(n log n), worst-case mitigated by pivot strategy, space O(log n).
+
+#### Usage
+
+```python
+quick_sort(arr: list, *, key=None, reverse: bool = False) -> list
+```
+
+**Parameters**
+
+- `arr` (list): The list to sort. Not modified in place.
+- `key` (callable | None): Key extraction function.
+- `reverse` (bool): If `True`, sort descending.
+
+**Returns**
+
+- `list`: A new sorted list.
+
+**Raises**
+
+- `TypeError`: If `arr` is not a list.
+
+**Examples**
+
+```python
+from funcbox import quick_sort
+
+print(quick_sort([3, 1, 4, 1, 5, 9]))
+# [1, 1, 3, 4, 5, 9]
+print(quick_sort(["cherry", "apple", "fig"], key=len, reverse=True))
+# ['cherry', 'apple', 'fig']
 ```
 
 ---
@@ -481,6 +652,126 @@ print(primes(start=10, limit=20))
 ---
 
 ### String Processing
+
+---
+
+### `chunk(iterable, size)`
+
+<a id="chunk"></a>
+
+Split *iterable* into consecutive chunks of at most *size* elements. The final chunk may be smaller.
+
+#### Usage
+
+```python
+chunk(iterable: Iterable, size: int) -> list[list]
+```
+
+**Parameters**
+
+- `iterable`: Any iterable to split.
+- `size` (int): Maximum elements per chunk. Must be a positive integer.
+
+**Returns**
+
+- `list[list]`: List of chunks, each of length ≤ `size`.
+
+**Raises**
+
+- `TypeError`: If `iterable` is not iterable or `size` is not a plain int.
+- `ValueError`: If `size` is not positive.
+
+**Examples**
+
+```python
+from funcbox import chunk
+
+print(chunk([1, 2, 3, 4, 5], 2))
+# [[1, 2], [3, 4], [5]]
+print(chunk(range(6), 3))
+# [[0, 1, 2], [3, 4, 5]]
+```
+
+---
+
+### `clamp(value, lo, hi)`
+
+<a id="clamp"></a>
+
+Return *value* clamped to the inclusive range `[lo, hi]`.
+
+#### Usage
+
+```python
+clamp(value: int | float, lo: int | float, hi: int | float) -> int | float
+```
+
+**Parameters**
+
+- `value`: The number to clamp.
+- `lo`: Inclusive lower bound.
+- `hi`: Inclusive upper bound.
+
+**Returns**
+
+- The clamped value (`lo` if below, `hi` if above, `value` otherwise).
+
+**Raises**
+
+- `TypeError`: If any argument is not a real number.
+- `ValueError`: If `lo > hi`.
+
+**Examples**
+
+```python
+from funcbox import clamp
+
+print(clamp(5, 1, 10))    # 5
+print(clamp(-3, 0, 100))  # 0
+print(clamp(150, 0, 100)) # 100
+print(clamp(3.7, 0.0, 5.0)) # 3.7
+```
+
+---
+
+### `flatten(nested, depth=None)`
+
+<a id="flatten"></a>
+
+Recursively flatten a nested iterable into a single list. Strings are treated as atomic and are never character-iterated. Uses an iterative DFS stack instead of recursion, so deeply nested structures don't hit Python's call-stack limit.
+
+#### Usage
+
+```python
+flatten(nested: Iterable, depth: int | None = None) -> list
+```
+
+**Parameters**
+
+- `nested`: The iterable to flatten.
+- `depth` (int | None): Maximum nesting depth to flatten. `None` = fully flatten.
+
+**Returns**
+
+- `list`: A flat list of elements.
+
+**Raises**
+
+- `TypeError`: If `nested` is not iterable or `depth` is not a positive int.
+- `ValueError`: If `depth` is provided but not a positive integer.
+
+**Examples**
+
+```python
+from funcbox import flatten
+
+print(flatten([1, [2, [3, [4]]]]))
+# [1, 2, 3, 4]
+print(flatten([1, [2, [3]]], depth=1))
+# [1, 2, [3]]
+print(flatten([1, "ab", [2, "cd"]]))
+# [1, 'ab', 2, 'cd']
+```
 
 ---
 
@@ -784,7 +1075,7 @@ from funcbox import truncate
 print(truncate("Hello, world!", 8))
 # 'Hello...'
 
-print(truncate("Hello, world!", 13))   # fits — returned unchanged
+print(truncate("Hello, world!", 13)) # fits — returned unchanged
 # 'Hello, world!'
 
 print(truncate("Hello, world!", 10, suffix="…"))
@@ -793,7 +1084,7 @@ print(truncate("Hello, world!", 10, suffix="…"))
 print(truncate("The quick brown fox", 12, word_boundary=True))
 # 'The quick...'
 
-print(truncate("The quick brown fox", 12))  # no word boundary
+print(truncate("The quick brown fox", 12)) # no word boundary
 # 'The quick...'
 ```
 
@@ -968,13 +1259,13 @@ d(["user.projects.0.name", "user.projects.1.name"], default="unknown")
 # Create a scoped Dig at a sub-node
 addr = d.scope("user.address")
 
-addr("city")           # Query relative to the scope
+addr("city") # Query relative to the scope
 # 'Kanyakumari'
 
-addr["zip"]            # Shorthand works too
+addr["zip"] # Shorthand works too
 # '629000'
 
-addr(["city", "state", "zip"])  # Multi-path relative to scope
+addr(["city", "state", "zip"]) # Multi-path relative to scope
 # ['Kanyakumari', 'Tamil Nadu', '629000']
 ```
 

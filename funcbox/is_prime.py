@@ -30,6 +30,13 @@ def is_prime(n: int) -> bool:
         raise TypeError(msg)
     if n < 2:
         return False
+    if n < 1000000:
+        if n in {2, 3}:
+            return True
+        if n % 2 == 0 or n % 3 == 0:
+            return False
+        limit = int(n**0.5)
+        return all(not (n % i == 0 or n % (i + 2) == 0) for i in range(5, limit + 1, 6))
     if n in _SMALL_PRIMES_SET:
         return True
     if any(n % p == 0 for p in _SMALL_PRIMES):

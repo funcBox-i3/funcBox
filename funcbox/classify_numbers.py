@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from .algorithms.sieve_of_eratosthenes import primes as sieve_primes
 from .is_prime import is_prime
 
 __all__ = ["classify_numbers"]
@@ -38,11 +39,32 @@ def classify_numbers(numbers: list[int]) -> dict[str, list[int]]:
     primes: list[int] = []
     composites: list[int] = []
     neither: list[int] = []
-    for n in numbers:
-        if n < 2:
-            neither.append(n)
-        elif is_prime(n):
-            primes.append(n)
-        else:
-            composites.append(n)
+
+    if not numbers:
+        return {"primes": primes, "composites": composites, "neither": neither}
+
+    max_n = max(numbers)
+    # Heuristic for sieve vs individual checks:
+    # Sieve is faster for dense sets of small numbers or large batches.
+    if (len(numbers) > 1000 and max_n < 1000000) or (
+        len(numbers) > 50 and max_n < 50000
+    ):
+        # Use sieve for large batches of small numbers
+        sieve_limit = max(0, max_n)
+        primes_set = set(sieve_primes(limit=sieve_limit))
+        for n in numbers:
+            if n < 2:
+                neither.append(n)
+            elif n in primes_set:
+                primes.append(n)
+            else:
+                composites.append(n)
+    else:
+        for n in numbers:
+            if n < 2:
+                neither.append(n)
+            elif is_prime(n):
+                primes.append(n)
+            else:
+                composites.append(n)
     return {"primes": primes, "composites": composites, "neither": neither}

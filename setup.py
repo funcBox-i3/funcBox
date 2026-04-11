@@ -1,4 +1,3 @@
-import importlib.util
 import re
 from pathlib import Path
 
@@ -18,36 +17,11 @@ with open(ROOT / "funcbox" / "__init__.py", encoding="utf-8") as f:
 
 
 def get_pypi_readme():
-    prepare_publish_path = ROOT / "experiments" / "prepare_publish.py"
-    if prepare_publish_path.exists():
-        spec = importlib.util.spec_from_file_location(
-            "funcbox_prepare_publish",
-            prepare_publish_path,
-        )
-        if spec is not None and spec.loader is not None:
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            generator = getattr(module, "generate_pypi_readme_for_build", None)
-            if callable(generator):
-                readme = generator(
-                    readme_path=ROOT / "README.md",
-                    verify_readme_path=ROOT / "experiments" / "PYPI_README_VERIFY.md",
-                )
-                if isinstance(readme, str) and readme.strip():
-                    return readme
-
-    with open(ROOT / "README.md", encoding="utf-8") as f:
-        readme = f.read()
-    readme = re.sub(
-        r"<!-- PYPI_FILTER_START -->[\s\S]*?<!-- PYPI_FILTER_END -->\n*",
-        "",
-        readme,
-    )
-    return re.sub(
-        r"<!-- PYPI_UNCOMMENT_START\n([\s\S]*?)\nPYPI_UNCOMMENT_END -->",
-        r"\1",
-        readme,
-    )
+    try:
+        with open(ROOT / "README_PYPI.md", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return "funcBox - A highly-optimized functional utility box with various helper functions. See https://github.com/funcbox-i3/funcbox for docs."
 
 
 setup(

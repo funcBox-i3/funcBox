@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import re
-from collections import Counter
+import string
 
 __all__ = ["is_anagram"]
 
-_NON_WORD_RE = re.compile(r"[^\w]")
-_NON_WORD_SPACE_RE = re.compile(r"[^\w\s]")
+_PUNCT_TABLE = str.maketrans("", "", string.punctuation)
 
 
 def is_anagram(
@@ -42,23 +40,26 @@ def is_anagram(
         True
 
     """
-    if not isinstance(str1, str):
+    if type(str1) is not str and not isinstance(str1, str):
         msg = f"str1 must be a string, got {type(str1).__name__!r}"
         raise TypeError(msg)
-    if not isinstance(str2, str):
+    if type(str2) is not str and not isinstance(str2, str):
         msg = f"str2 must be a string, got {type(str2).__name__!r}"
         raise TypeError(msg)
 
     def preprocess(s: str) -> str:
         if case:
             s = s.lower()
-        if punct and spaces:
-            s = _NON_WORD_RE.sub("", s)
-        elif punct:
-            s = _NON_WORD_SPACE_RE.sub("", s)
-        elif spaces:
+        if punct:
+            s = s.translate(_PUNCT_TABLE)
+        if spaces:
             s = s.replace(" ", "")
         return s
+
+    if not case and not spaces and not punct:
+        if len(str1) != len(str2):
+            return False
+        return sorted(str1) == sorted(str2)
 
     str1_processed = preprocess(str1)
     str2_processed = preprocess(str2)
@@ -66,4 +67,4 @@ def is_anagram(
     if len(str1_processed) != len(str2_processed):
         return False
 
-    return Counter(str1_processed) == Counter(str2_processed)
+    return sorted(str1_processed) == sorted(str2_processed)

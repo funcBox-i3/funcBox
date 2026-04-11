@@ -53,8 +53,11 @@ def is_null_or_blank(value: object) -> bool:
     """
     if value is None:
         return True
-    if isinstance(value, str):
-        return not value or value.isspace()
+    v_type = type(value)
+    if v_type is str:
+        return not value or not value.strip()
+    if v_type is list or v_type is dict or v_type is tuple or v_type is set:
+        return not value
     if isinstance(value, Sized):
         return len(value) == 0
     return False
